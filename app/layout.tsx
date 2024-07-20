@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
+import { SheetProvedor } from "@/provedores/sheet-provedor";
+import { QueryProvedor } from "@/provedores/query-provedor";
+import { Toaster } from "@/components/ui/sonner";
+import { ThemePovedor } from "@/provedores/theme-provedor";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +20,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <ThemePovedor
+            attribute="class"
+            enableSystem
+            disableTransitionOnChange
+            defaultTheme="light"
+          >
+            <QueryProvedor>
+              {children}
+              <Toaster />
+              <SheetProvedor />
+            </QueryProvedor>
+          </ThemePovedor>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

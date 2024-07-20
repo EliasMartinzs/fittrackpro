@@ -1,0 +1,1 @@
+ALTER TABLE "treinos" DROP COLUMN IF EXISTS "criado_em";

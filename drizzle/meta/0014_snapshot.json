@@ -1,0 +1,195 @@
+{
+  "id": "cd15eb60-40e4-4577-abe5-c8269a275435",
+  "prevId": "f6071ebe-881b-4f55-ba03-60b7d589230b",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "statusTreinos": {
+      "name": "statusTreinos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "treino_diario_id": {
+          "name": "treino_diario_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "incompleto": {
+          "name": "incompleto",
+          "type": "status",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data_conclusao": {
+          "name": "data_conclusao",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notas": {
+          "name": "notas",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "treinos": {
+      "name": "treinos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nome_treino": {
+          "name": "nome_treino",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "horario_treino": {
+          "name": "horario_treino",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "treinosDiarios": {
+      "name": "treinosDiarios",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "treino_id": {
+          "name": "treino_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dia_da_semana": {
+          "name": "dia_da_semana",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome_exercisio": {
+          "name": "nome_exercisio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "Força": {
+          "name": "Força",
+          "type": "tipoExercicio",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "horario_treino": {
+          "name": "horario_treino",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notas": {
+          "name": "notas",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "intensidade": {
+      "name": "intensidade",
+      "values": {
+        "baixa": "baixa",
+        "media": "media",
+        "alta": "alta"
+      }
+    },
+    "status": {
+      "name": "status",
+      "values": {
+        "completo": "completo",
+        "incompleto": "incompleto"
+      }
+    },
+    "tipoExercicio": {
+      "name": "tipoExercicio",
+      "values": {
+        "Cardio": "Cardio",
+        "Força": "Força",
+        "Flexibilidade": "Flexibilidade",
+        "Resistência": "Resistência",
+        "Equilíbrio": "Equilíbrio",
+        "HIIT": "HIIT",
+        "Pilates": "Pilates",
+        "Yoga": "Yoga",
+        "Aeróbico": "Aeróbico",
+        "Anaeróbico": "Anaeróbico",
+        "Musculação": "Musculação",
+        "Alongamento": "Alongamento",
+        "Pliometria": "Pliometria"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

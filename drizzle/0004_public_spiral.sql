@@ -1,0 +1,1 @@
+ALTER TABLE "treinosDiarios" ADD COLUMN "nome_exercisio" text NOT NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE "treinos" ADD COLUMN "criado_em" timestamp DEFAULT now();
