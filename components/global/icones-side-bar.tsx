@@ -26,7 +26,11 @@ export const IconesSideBar = ({ fechar }: Props) => {
           <Link href={href} key={href}>
             {matches ? (
               <div
-                className="bg-accent py-5 rounded-2xl shadow-sm flex items-center justify-center gap-3 text-center hover:bg-accent/70 border border-border/70 transition-colors"
+                className={cn(
+                  "bg-accent py-5 rounded-2xl shadow-sm flex items-center justify-center gap-3 text-center hover:bg-accent/70 border border-border/70 transition-colors",
+                  pathname === href &&
+                    "border-primary bg-primary text-primary-foreground"
+                )}
                 onClick={fechar}
               >
                 <Icon className={cn("size-7")} />

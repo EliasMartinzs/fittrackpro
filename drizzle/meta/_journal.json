@@ -134,6 +134,41 @@
       "when": 1720989177834,
       "tag": "0018_volatile_power_man",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1721491639169,
+      "tag": "0019_outstanding_lake",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1721506308695,
+      "tag": "0020_oval_lizard",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1721528033349,
+      "tag": "0021_robust_the_hunter",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "5",
+      "when": 1721528067641,
+      "tag": "0022_volatile_firebird",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "5",
+      "when": 1721528144502,
+      "tag": "0023_absent_rumiko_fujikawa",
+      "breakpoints": true
     }
   ]
 }

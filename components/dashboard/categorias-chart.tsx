@@ -3,7 +3,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -11,15 +10,17 @@ import {
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { pegarCategoriasTreinos } from "@/features/treinos/api/pegar-categorias-treino";
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
-import { Loading } from "../global/loading";
+import { Skeleton } from "../ui/skeleton";
 
 export const CategoriasChart = () => {
   const { data, isLoading, isError } = pegarCategoriasTreinos();
 
   if (isLoading) {
     return (
-      <div className="w-full grid place-items-center">
-        <Loading height={24} width={24} />
+      <div className="w-full grid place-items-center gap-2">
+        <Skeleton className="w-full h-48" />
+        <Skeleton className="w-full h-8" />
+        <Skeleton className="w-full h-8" />
       </div>
     );
   }

@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { tiposDeDietas } from "./constants";
 
 export const tipoExercicioEnum = z.enum([
   "Cardio",
@@ -53,4 +54,40 @@ export const treinoSchema = z.object({
   repeticoes: z.number(),
   series: z.number(),
   notas: z.string().optional(),
+});
+
+export const tiposDeDietasEnum = z.enum([
+  "Comum",
+  "Dieta Low Carb",
+  "Dieta DASH",
+  "Dieta Cetogênica",
+  "Dieta Dukan",
+  "Dieta Mediterrânea",
+]);
+
+export const schemaPassoUm = z.object({
+  nome: z.string().min(1, {
+    message: "Nome da dieta é obrigatório",
+  }),
+  tipo: tiposDeDietasEnum.default("Comum").optional(),
+  descricao: z.string().optional(),
+});
+
+export const schemaPassoDois = z.object({
+  nome: z.string().min(1, {
+    message: "Nome da refeicao é obrigatório",
+  }),
+  horario: z.string(),
+});
+
+export const schemaPassoTres = z.object({
+  nome: z.string().min(1, {
+    message: "Nome do alimento é obrigatório",
+  }),
+  quantidade: z.number().min(1, {
+    message: "Quantidade é obrigatória",
+  }),
+  calorias: z.number().optional(),
+  proteinas: z.number().optional(),
+  carboidratos: z.number().optional(),
 });

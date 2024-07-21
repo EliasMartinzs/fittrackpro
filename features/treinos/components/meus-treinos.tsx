@@ -10,14 +10,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Loading } from "@/components/global/loading";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useExerciciosFiltrados } from "@/hooks/use-exercicios-filtrados";
 import { Trash2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { deletarTreino } from "../api/deletar-treino";
 import { pegarTreinos } from "../api/pegar-treinos";
-import { useExerciciosFiltrados } from "@/hooks/use-exercicios-filtrados";
-
 export const MeusTreinos = () => {
   const { data, isLoading } = pegarTreinos();
   const searchParams = useSearchParams();
@@ -34,8 +33,9 @@ export const MeusTreinos = () => {
 
   if (isLoading) {
     return (
-      <div className="flex-1 grid place-items-center">
-        <Loading height={32} width={32} />
+      <div className="w-full grid place-items-center">
+        <Skeleton className="w-full h-20" />
+        <Skeleton className="w-full h-20" />
       </div>
     );
   }

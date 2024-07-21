@@ -1,10 +1,10 @@
 "use client";
 
-import { Loading } from "@/components/global/loading";
 import { useExerciciosFiltrados } from "@/hooks/use-exercicios-filtrados";
 import { useSearchParams } from "next/navigation";
 import { pegarTreinos } from "../api/pegar-treinos";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -31,8 +31,9 @@ export const TreinoDetalhe = () => {
 
   if (isLoading) {
     return (
-      <div className="flex-1 grid place-items-center">
-        <Loading height={32} width={32} />
+      <div className="w-full grid place-items-center">
+        <Skeleton className="w-full h-20" />
+        <Skeleton className="w-full h-20" />
       </div>
     );
   }

@@ -6,7 +6,6 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -18,7 +17,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { pegarIntensidadeTreino } from "@/features/treinos/api/pegar-intensidade-treino";
-import { Loading } from "../global/loading";
+import { Skeleton } from "../ui/skeleton";
 
 type IntensidadePorMes = {
   baixa: number;
@@ -48,8 +47,6 @@ export const IntensidadeChart = () => {
 
   const { data, isLoading, isError } = pegarIntensidadeTreino();
 
-  console.log(data);
-
   const chartData = React.useMemo(() => {
     if (!data || "error" in data) return [];
 
@@ -75,8 +72,10 @@ export const IntensidadeChart = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full grid place-items-center">
-        <Loading height={24} width={24} />
+      <div className="w-full grid place-items-center gap-2">
+        <Skeleton className="w-full h-48" />
+        <Skeleton className="w-full h-8" />
+        <Skeleton className="w-full h-8" />
       </div>
     );
   }

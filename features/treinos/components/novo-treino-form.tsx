@@ -62,7 +62,7 @@ export const NovoTreinoForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-y-5 overflow-y-auto ocultar-scrollbar"
+        className="flex flex-col gap-y-5 overflow-y-auto ocultar-scrollbar py-5"
       >
         <FormField
           control={form.control}

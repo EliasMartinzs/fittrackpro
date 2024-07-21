@@ -6,27 +6,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
 import {
   Drawer,
   DrawerContent,
-  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-
-import { useMediaQuery } from "usehooks-ts";
-import { usarNovoTreino } from "../hooks/usar-novo-treino-drawer";
-import { NovoTreinoForm } from "./novo-treino-form";
 import { useEffect, useRef } from "react";
+import { useMediaQuery } from "usehooks-ts";
+import { usarNovaDieta } from "../hooks/usar-nova-dieta";
+import { NovaDietaPassos } from "./nova-dieta-passos";
 
-export const NovoTreino = () => {
-  const { estaAberto, fechar, abrir } = usarNovoTreino();
+export const NovaDieta = () => {
+  const { fechar, abrir, estaAberto } = usarNovaDieta();
   const isDesktop = useMediaQuery("(min-width: 768px)", {
     defaultValue: false,
     initializeWithValue: true,
   });
-
   const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,13 +60,11 @@ export const NovoTreino = () => {
   if (isDesktop) {
     return (
       <Dialog open={estaAberto} onOpenChange={handleOpenChange}>
-        <DialogContent className="overflow-y-auto ocultar-scrollbar py-4">
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-center font-medium">
-              Cadastrar um novo treino
-            </DialogTitle>
+            <DialogTitle>Criar nova dieta</DialogTitle>
           </DialogHeader>
-          <NovoTreinoForm />
+          <NovaDietaPassos />
         </DialogContent>
       </Dialog>
     );
@@ -78,12 +72,12 @@ export const NovoTreino = () => {
 
   return (
     <Drawer open={estaAberto} onOpenChange={handleOpenChange}>
-      <DrawerContent ref={drawerRef} className="">
+      <DrawerContent ref={drawerRef}>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Cadastrar um noivo treino</DrawerTitle>
+          <DrawerTitle>Criar nova dieta</DrawerTitle>
         </DrawerHeader>
-        <div className="mx-5 overflow-y-auto ocultar-scrollbar">
-          <NovoTreinoForm />
+        <div className="mx-5">
+          <NovaDietaPassos />
         </div>
       </DrawerContent>
     </Drawer>

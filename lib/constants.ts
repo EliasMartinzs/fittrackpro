@@ -63,7 +63,7 @@ export const diasDaSemana = [
   "Quinta-feira",
   "Sexta-feira",
   "Sábado",
-];
+] as const;
 
 export const categoriasTreino: string[] = [
   "Peito",
@@ -519,3 +519,12 @@ export const exercicios: { nome: string; tipo: string }[] = [
 ] as const;
 
 export const horarioTreino: string[] = ["Manha", "Tarde", "Noite"] as const;
+
+export const tiposDeDietas: string[] = [
+  "Comum",
+  "Dieta Low Carb",
+  "Dieta DASH",
+  "Dieta Cetogênica",
+  "Dieta Dukan",
+  "Dieta Mediterrânea",
+] as const;

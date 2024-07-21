@@ -20,7 +20,7 @@ export function TreinoSelect({ onEventChange, data, selectLabel }: Props) {
       <SelectTrigger className="w-full">
         <SelectValue placeholder={data.at(0)} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="select-content">
         <SelectGroup>
           <SelectLabel>{selectLabel}</SelectLabel>
           {data.map((t) => (
