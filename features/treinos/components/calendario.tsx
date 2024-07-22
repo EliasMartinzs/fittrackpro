@@ -4,9 +4,12 @@ import { horarioTreino } from "@/lib/constants";
 import { cn, gerarDiasDaSemana } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
-import { BsGripHorizontal } from "react-icons/bs";
 
-export const Calendario = () => {
+type Props = {
+  mostraHorario?: boolean;
+};
+
+export const Calendario = ({ mostraHorario = true }: Props) => {
   const dias = gerarDiasDaSemana();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -57,25 +60,27 @@ export const Calendario = () => {
         ))}
       </div>
 
-      <div className="flex gap-3">
-        {horarioTreino.map((horario, index) => (
-          <Button
-            onClick={() => {
-              router.push(
-                pathname + "?" + criarQueryString("horario", horario)
-              );
-            }}
-            variant={
-              (horarioSelecionado === horario && "destructive") ||
-              (index === 0 && !horarioSelecionado && "destructive") ||
-              "outline"
-            }
-            key={horario}
-          >
-            {horario}
-          </Button>
-        ))}
-      </div>
+      {mostraHorario && (
+        <div className="flex gap-3">
+          {horarioTreino.map((horario, index) => (
+            <Button
+              onClick={() => {
+                router.push(
+                  pathname + "?" + criarQueryString("horario", horario)
+                );
+              }}
+              variant={
+                (horarioSelecionado === horario && "destructive") ||
+                (index === 0 && !horarioSelecionado && "destructive") ||
+                "outline"
+              }
+              key={horario}
+            >
+              {horario}
+            </Button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

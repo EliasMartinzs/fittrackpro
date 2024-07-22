@@ -19,23 +19,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { tiposDeDietas } from "@/lib/constants";
 import { schemaPassoUm } from "@/lib/validacoes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import { criarNovaDieta } from "../api/criar-nova-dieta";
+import { toast } from "sonner";
+import { Loading } from "@/components/global/loading";
 
 export type PassoUmValidacao = z.infer<typeof schemaPassoUm>;
 
 type Props = {
   proximo: () => void;
-  setPassoUmData: (data: PassoUmValidacao) => void;
-  criarDieta: () => void;
+  setDietaId: (dietaId: string) => void;
 };
 
-export const DietaPassoUm = ({
-  proximo,
-  setPassoUmData,
-  criarDieta,
-}: Props) => {
+export const DietaPassoUm = ({ proximo, setDietaId }: Props) => {
   const form = useForm<PassoUmValidacao>({
     mode: "onChange",
     resolver: zodResolver(schemaPassoUm),
@@ -45,11 +43,26 @@ export const DietaPassoUm = ({
       descricao: "",
     },
   });
+  const criarDietaMutation = criarNovaDieta();
 
   const onSubmit: SubmitHandler<PassoUmValidacao> = (data) => {
-    setPassoUmData(data);
-    criarDieta();
-    // proximo();
+    criarDietaMutation.mutate(
+      {
+        nome: data?.nome!,
+        descricao: data?.descricao,
+        tipo: data?.tipo,
+      },
+      {
+        onSuccess: (data) => {
+          setDietaId(data.dietaId as string);
+          form.reset();
+          proximo();
+        },
+        onError: () => {
+          toast("Houve um erro. Tente novamente!");
+        },
+      }
+    );
   };
 
   return (
@@ -115,10 +128,22 @@ export const DietaPassoUm = ({
           )}
         />
 
-        <div className="w-full flex items-center justify-center">
-          <Button type="submit">
-            Proximo <ChevronRight />
-          </Button>
+        <div className="w-full flex items-center justify-center gap-10">
+          {!criarDietaMutation.isPending ? (
+            <>
+              <Button
+                className="hover:bg-primary hover:text-primary-foreground transition-colors"
+                disabled={true}
+              >
+                <ChevronLeft /> Anterior
+              </Button>
+              <Button className="hover:bg-primary hover:text-primary-foreground transition-colors">
+                Proximo <ChevronRight />
+              </Button>
+            </>
+          ) : (
+            <Loading height={24} width={24} />
+          )}
         </div>
       </form>
     </Form>

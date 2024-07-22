@@ -1,11 +1,12 @@
 import { client } from "@/lib/hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { InferRequestType, InferResponseType } from "hono";
-import { toast } from "sonner";
+import { InferRequestType } from "hono";
 
-type ResponseType = InferResponseType<
-  (typeof client.api.dietas)["refeicoes"]["$post"]
->;
+type ResponseType = {
+  error?: string;
+  refeicaoId?: string;
+};
+
 type RequestType = InferRequestType<
   (typeof client.api.dietas)["refeicoes"]["$post"]
 >["json"];
@@ -14,23 +15,20 @@ export const criarNovaRefeicao = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationKey: ["dietas"],
+    mutationKey: ["refeicoes"],
     mutationFn: async (json) => {
-      const response = await client.api.dietas["refeicoes"]["$post"]({ json });
-
-      return await response.json();
-    },
-    onSuccess: () => {
-      toast("Refeicao criada com sucesso", {
-        id: "criar-refeicao",
+      const response = await client.api.dietas["refeicoes"].$post({
+        json: {
+          dietaId: json.dietaId,
+          horario: json.horario,
+          nome: json.nome,
+        },
       });
 
-      queryClient.invalidateQueries({ queryKey: ["dietas"] });
+      return (await response.json()) as ResponseType;
     },
-    onError: () => {
-      toast("Houve um erro, Tente novamente!", {
-        id: "criar-refeicao",
-      });
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["refeicoes"] });
     },
   });
 

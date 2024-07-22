@@ -1,1 +1,0 @@
-ALTER TABLE "treinos" ADD COLUMN "horario_treino" text NOT NULL;

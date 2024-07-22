@@ -16,20 +16,25 @@ import "react-clock/dist/Clock.css";
 import { SubmitHandler, useForm } from "react-hook-form";
 import "react-time-picker/dist/TimePicker.css";
 import { z } from "zod";
+import { criarNovaRefeicao } from "../api/criar-nova-refeicao";
+import { Loading } from "@/components/global/loading";
 
 type PassoDoisData = z.infer<typeof schemaPassoDois>;
 
 type Props = {
   proximo: () => void;
   anterior: () => void;
-  setPassoDoisData: (data: PassoDoisData) => void;
+  dietaId: string;
+  setRefeicaoId: (refeicaoId: string) => void;
 };
 
 export const DietaPassoDois = ({
   proximo,
   anterior,
-  setPassoDoisData,
+  dietaId,
+  setRefeicaoId,
 }: Props) => {
+  const [horarioValue, setHorarioValue] = useState<string>("");
   const form = useForm<PassoDoisData>({
     mode: "onChange",
     resolver: zodResolver(schemaPassoDois),
@@ -39,12 +44,25 @@ export const DietaPassoDois = ({
     },
   });
 
+  const criarRefeicaoMutation = criarNovaRefeicao();
+
   const onSubmit: SubmitHandler<PassoDoisData> = (data) => {
-    setPassoDoisData(data);
-    proximo();
+    criarRefeicaoMutation.mutate(
+      {
+        dietaId: dietaId,
+        nome: data.nome,
+        horario: convertTimeToDateTimeString(data.horario),
+      },
+      {
+        onSuccess: (data) => {
+          setRefeicaoId(data.refeicaoId!);
+          form.reset();
+          proximo();
+        },
+      }
+    );
   };
 
-  const [horarioValue, setHorarioValue] = useState<string>("");
   const formatTime = (value: string) => {
     const cleanValue = value.replace(/\D/g, "").slice(0, 4);
     if (cleanValue.length <= 2) return cleanValue;
@@ -56,6 +74,21 @@ export const DietaPassoDois = ({
     setHorarioValue(newValue);
     form.setValue("horario", newValue);
   };
+
+  function convertTimeToDateTimeString(time: string): string {
+    const [hours, minutes] = time.split(":").map(Number);
+    const now = new Date();
+    now.setHours(hours, minutes, 0, 0);
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Meses são baseados em zero
+    const day = String(now.getDate()).padStart(2, "0");
+    const hour = String(now.getHours()).padStart(2, "0");
+    const minute = String(now.getMinutes()).padStart(2, "0");
+    const second = String(now.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+  }
 
   return (
     <Form {...form}>
@@ -93,13 +126,19 @@ export const DietaPassoDois = ({
           )}
         />
 
-        <div className="w-full flex items-center justify-center gap-5">
-          <Button type="button" onClick={anterior}>
-            <ChevronLeft /> Anterior
-          </Button>
-          <Button type="submit">
-            Proximo <ChevronRight />
-          </Button>
+        <div className="w-full flex items-center justify-center gap-10">
+          {!criarRefeicaoMutation.isPending ? (
+            <>
+              <Button className="hover:bg-primary hover:text-primary-foreground transition-colors">
+                <ChevronLeft /> Anterior
+              </Button>
+              <Button className="hover:bg-primary hover:text-primary-foreground transition-colors">
+                Proximo <ChevronRight />
+              </Button>
+            </>
+          ) : (
+            <Loading height={24} width={24} />
+          )}
         </div>
       </form>
     </Form>

@@ -1,1 +1,0 @@
-ALTER TABLE "alimentos" ALTER COLUMN "quantidade" DROP NOT NULL;

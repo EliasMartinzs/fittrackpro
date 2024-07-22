@@ -78,7 +78,7 @@ export const refeicoes = pgTable("refeicoes", {
     .references(() => dietas.id)
     .notNull(),
   nome: text("nome").notNull(),
-  horario: timestamp("time", { mode: "date" }).notNull(),
+  horario: timestamp("time", { mode: "string" }).notNull(),
 });
 
 export const refeicoesRelacoes = relations(refeicoes, ({ one, many }) => ({
@@ -95,10 +95,10 @@ export const alimentos = pgTable("alimentos", {
     .references(() => refeicoes.id)
     .notNull(),
   nome: text("nome").notNull(),
-  quantidade: text("quantidade").notNull(),
-  calorias: text("calorias"),
-  proteinas: text("proteinas"),
-  carboidratos: text("categoria"),
+  quantidade: integer("quantidade").notNull(),
+  calorias: integer("calorias"),
+  proteinas: integer("proteinas"),
+  carboidratos: integer("categoria"),
 });
 
 export const alimentosRelacoes = relations(alimentos, ({ one }) => ({

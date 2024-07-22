@@ -1,11 +1,11 @@
 {
-  "id": "4c2a1435-7957-4c66-91a9-041dd5600659",
+  "id": "16b5d15c-e1db-421f-8965-fc00f1e15ee0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
-    "users": {
-      "name": "users",
+    "alimentos": {
+      "name": "alimentos",
       "schema": "",
       "columns": {
         "id": {
@@ -14,11 +14,274 @@
           "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
+        "refeicoes_id": {
+          "name": "refeicoes_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantidade": {
+          "name": "quantidade",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "calorias": {
+          "name": "calorias",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "proteinas": {
+          "name": "proteinas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "alimentos_refeicoes_id_refeicoes_id_fk": {
+          "name": "alimentos_refeicoes_id_refeicoes_id_fk",
+          "tableFrom": "alimentos",
+          "tableTo": "refeicoes",
+          "columnsFrom": [
+            "refeicoes_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "dietas": {
+      "name": "dietas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "nome_da_dieta": {
+          "name": "nome_da_dieta",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "refeicoes": {
+      "name": "refeicoes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "dieta_id": {
+          "name": "dieta_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "refeicoes_dieta_id_dietas_id_fk": {
+          "name": "refeicoes_dieta_id_dietas_id_fk",
+          "tableFrom": "refeicoes",
+          "tableTo": "dietas",
+          "columnsFrom": [
+            "dieta_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "treinos": {
+      "name": "treinos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "dia_da_semana": {
+          "name": "dia_da_semana",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "horario_treino": {
+          "name": "horario_treino",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "treinosDiarios": {
+      "name": "treinosDiarios",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "treino_id": {
+          "name": "treino_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dia_da_semana": {
+          "name": "dia_da_semana",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome_exercisio": {
+          "name": "nome_exercisio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "Força": {
+          "name": "Força",
+          "type": "tipoExercicio",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "horario_treino": {
+          "name": "horario_treino",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "intensidade": {
+          "name": "intensidade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "series": {
+          "name": "series",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "repeticoes": {
+          "name": "repeticoes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notas": {
+          "name": "notas",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -27,7 +290,34 @@
       "uniqueConstraints": {}
     }
   },
-  "enums": {},
+  "enums": {
+    "intensidade": {
+      "name": "intensidade",
+      "values": {
+        "baixa": "baixa",
+        "media": "media",
+        "alta": "alta"
+      }
+    },
+    "tipoExercicio": {
+      "name": "tipoExercicio",
+      "values": {
+        "Cardio": "Cardio",
+        "Força": "Força",
+        "Flexibilidade": "Flexibilidade",
+        "Resistência": "Resistência",
+        "Equilíbrio": "Equilíbrio",
+        "HIIT": "HIIT",
+        "Pilates": "Pilates",
+        "Yoga": "Yoga",
+        "Aeróbico": "Aeróbico",
+        "Anaeróbico": "Anaeróbico",
+        "Musculação": "Musculação",
+        "Alongamento": "Alongamento",
+        "Pliometria": "Pliometria"
+      }
+    }
+  },
   "schemas": {},
   "_meta": {
     "columns": {},

@@ -1,14 +1,8 @@
-import { schemaPassoDois, schemaPassoTres } from "@/lib/validacoes";
 import { useState } from "react";
-import { z } from "zod";
-import { schemaPassoUm } from "../../../lib/validacoes";
 import { DietaPassoDois } from "./dieta-passo-dois";
 import { DietaPassoTres } from "./dieta-passo-tres";
 import { DietaPassoUm } from "./dieta-passo-um";
 import { PassosNavegacao } from "./passos-navegacao";
-import { criarNovaDieta } from "../api/criar-nova-dieta";
-import { criarNovaRefeicao } from "../api/criar-nova-refeicao";
-import { criarNovaAlimento } from "../api/criar-novo-alimento";
 
 const passosData = [
   {
@@ -25,59 +19,29 @@ const passosData = [
   },
 ];
 
-type PassoUmData = z.infer<typeof schemaPassoUm>;
-type PassoDoisData = z.infer<typeof schemaPassoDois>;
-type PassoTresData = z.infer<typeof schemaPassoTres>;
-
 export const NovaDietaPassos = () => {
   const [passosAtual, setPassosAtual] = useState(0);
-  const [passoUmData, setPassoUmData] = useState<PassoUmData | null>(null);
-  const [passoDoisData, setPassoDoisData] = useState<PassoDoisData | null>(
-    null
-  );
-  const [passoTresData, setPassoTresData] = useState<PassoTresData | null>(
-    null
-  );
-  const criarDietaMutation = criarNovaDieta();
-  const criarRefeicaoMutation = criarNovaRefeicao();
-  const criarAlimentoMutation = criarNovaAlimento();
+  const [dietaId, setDietaId] = useState<string>("");
+  const [refeicaoId, setRefeicaoId] = useState<string>("");
 
   const nextStep = () => setPassosAtual((prev) => prev + 1);
   const prevStep = () => setPassosAtual((prev) => prev - 1);
 
-  const criarDieta = () => {
-    criarDietaMutation.mutate({
-      nome: passoUmData?.nome!,
-      descricao: passoUmData?.descricao,
-      tipo: passoUmData?.tipo,
-    });
-  };
-
   const renderStepContent = () => {
     switch (passosAtual) {
       case 0:
-        return (
-          <DietaPassoUm
-            proximo={nextStep}
-            setPassoUmData={setPassoUmData}
-            criarDieta={criarDieta}
-          />
-        );
+        return <DietaPassoUm proximo={nextStep} setDietaId={setDietaId} />;
       case 1:
         return (
           <DietaPassoDois
             proximo={nextStep}
             anterior={prevStep}
-            setPassoDoisData={setPassoDoisData}
+            dietaId={dietaId}
+            setRefeicaoId={setRefeicaoId}
           />
         );
       case 2:
-        return (
-          <DietaPassoTres
-            anterior={prevStep}
-            setPassoTresData={setPassoTresData}
-          />
-        );
+        return <DietaPassoTres anterior={prevStep} refeicaoId={refeicaoId} />;
       default:
         return null;
     }

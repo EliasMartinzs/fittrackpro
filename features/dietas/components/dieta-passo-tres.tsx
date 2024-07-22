@@ -1,5 +1,5 @@
-import { schemaPassoTres } from "@/lib/validacoes";
-import { z } from "zod";
+import { Loading } from "@/components/global/loading";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -9,19 +9,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { schemaPassoTres } from "@/lib/validacoes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { IoCreateOutline } from "react-icons/io5";
+import { toast } from "sonner";
+import { z } from "zod";
+import { criarNovaAlimento } from "../api/criar-novo-alimento";
+import { usarNovaDieta } from "../hooks/usar-nova-dieta";
 
 type PassoTresData = z.infer<typeof schemaPassoTres>;
 
 type Props = {
   anterior: () => void;
-  setPassoTresData: (data: PassoTresData) => void;
+  refeicaoId: string;
 };
 
-export const DietaPassoTres = ({ anterior, setPassoTresData }: Props) => {
+export const DietaPassoTres = ({ anterior, refeicaoId }: Props) => {
   const form = useForm<PassoTresData>({
     mode: "onChange",
     resolver: zodResolver(schemaPassoTres),
@@ -33,14 +38,33 @@ export const DietaPassoTres = ({ anterior, setPassoTresData }: Props) => {
       quantidade: 0,
     },
   });
+  const { fechar } = usarNovaDieta();
+
+  const criarAlimentoMutation = criarNovaAlimento();
 
   const onSubmit: SubmitHandler<PassoTresData> = (data) => {
-    setPassoTresData(data);
+    criarAlimentoMutation.mutate(
+      {
+        refeicoesId: refeicaoId,
+        ...data,
+      },
+      {
+        onSuccess: () => {
+          toast("Dieta criada com sucesso");
+          fechar();
+        },
+      }
+    );
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <small className="text-muted-foreground text-center w-full">
+          Para criar uma dieta, adicione pelo menos um alimento. Após criar a
+          dieta, você poderá adicionar mais alimentos acessando a página da
+          dieta.
+        </small>
         <FormField
           control={form.control}
           name="nome"
@@ -62,7 +86,12 @@ export const DietaPassoTres = ({ anterior, setPassoTresData }: Props) => {
             <FormItem>
               <FormLabel>Quantidade do alimento</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="80g" type="number" />
+                <Input
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  value={field.value ? Number(field.value) : ""}
+                  placeholder="80g"
+                  type="number"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -76,7 +105,12 @@ export const DietaPassoTres = ({ anterior, setPassoTresData }: Props) => {
             <FormItem>
               <FormLabel>Quantidade de calorias</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="250" type="number" />
+                <Input
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  value={field.value ? Number(field.value) : ""}
+                  placeholder="250"
+                  type="number"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -90,7 +124,12 @@ export const DietaPassoTres = ({ anterior, setPassoTresData }: Props) => {
             <FormItem>
               <FormLabel>Quantidade de proteinas</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="30" type="number" />
+                <Input
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  value={field.value ? Number(field.value) : ""}
+                  placeholder="30"
+                  type="number"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -99,12 +138,17 @@ export const DietaPassoTres = ({ anterior, setPassoTresData }: Props) => {
 
         <FormField
           control={form.control}
-          name="proteinas"
+          name="carboidratos"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Quantidade de carboidratos</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="90" type="number" />
+                <Input
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  value={field.value ? Number(field.value) : ""}
+                  placeholder="90"
+                  type="number"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -112,16 +156,18 @@ export const DietaPassoTres = ({ anterior, setPassoTresData }: Props) => {
         />
 
         <div className="w-full flex items-center justify-center gap-10">
-          <Button type="button" onClick={anterior}>
-            <ChevronLeft /> Anterior
-          </Button>
-          <Button
-            type="submit"
-            variant="destructive"
-            className="flex items-center gap-2"
-          >
-            Criar dieta <Plus className="size-5" />
-          </Button>
+          {!criarAlimentoMutation.isPending ? (
+            <>
+              <Button className="hover:bg-primary hover:text-primary-foreground transition-colors">
+                <ChevronLeft /> Anterior
+              </Button>
+              <Button className="bg-primary text-primary-foreground transition-colors flex items-center gap-3">
+                Criar dieta <IoCreateOutline className="size-5" />
+              </Button>
+            </>
+          ) : (
+            <Loading height={24} width={24} />
+          )}
         </div>
       </form>
     </Form>

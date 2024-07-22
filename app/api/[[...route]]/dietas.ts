@@ -12,9 +12,9 @@ import { zValidator } from "@hono/zod-validator";
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { cache } from "hono/cache";
 
 const app = new Hono()
+  .get("")
   .post(
     "/alimentos",
     clerkMiddleware(),
@@ -37,10 +37,13 @@ const app = new Hono()
         return c.json({ error: "Usuário não autenticado" });
       }
 
-      const data = await db.insert(alimentos).values({
-        id: createId(),
-        ...values,
-      });
+      const [data] = await db
+        .insert(alimentos)
+        .values({
+          id: createId(),
+          ...values,
+        })
+        .returning({ alimentoId: alimentos.id });
 
       return c.json({ data });
     }
@@ -50,7 +53,47 @@ const app = new Hono()
     clerkMiddleware(),
     zValidator(
       "json",
-      inserirRefeicoes.pick({ nome: true, horario: true, dietaId: true })
+      inserirRefeicoes.pick({
+        dietaId: true,
+        nome: true,
+        horario: true,
+      })
+    ),
+    async (c) => {
+      const auth = getAuth(c);
+      const values = c.req.valid("json");
+
+      if (!auth?.userId) {
+        return c.json({ error: "Usuário não autenticado" }, 401);
+      }
+
+      try {
+        const [data] = await db
+          .insert(refeicoes)
+          .values({
+            id: createId(),
+            dietaId: values.dietaId,
+            horario: values.horario,
+            nome: values.nome,
+          })
+          .returning({ refeicaoId: refeicoes.id });
+
+        const refeicaoId = data.refeicaoId;
+
+        return c.json({ refeicaoId });
+      } catch (error) {}
+    }
+  )
+  .post(
+    "/dietas",
+    clerkMiddleware(),
+    zValidator(
+      "json",
+      inserirDietas.pick({
+        nome: true,
+        descricao: true,
+        tipo: true,
+      })
     ),
     async (c) => {
       const auth = getAuth(c);
@@ -60,56 +103,39 @@ const app = new Hono()
         return c.json({ error: "Usuário não autenticado" });
       }
 
-      const data = await db.insert(refeicoes).values({
-        id: createId(),
-        ...values,
-      });
-
-      return c.json({ data });
-    }
-  )
-  .post(
-    "/",
-    cache({
-      cacheName: "dietas",
-      cacheControl: "no-cache",
-    }),
-    clerkMiddleware(),
-    zValidator(
-      "form",
-      inserirDietas.pick({
-        nome: true,
-        descricao: true,
-        tipo: true,
-      })
-    ),
-    async (c) => {
-      const auth = getAuth(c);
-      const values = c.req.valid("form");
-      if (!auth?.userId) {
-        return c.json({ error: "Usuário não autenticado" });
-      }
-
-      let { nome } = values;
-      console.log(nome);
       const dietaExistente = await db
         .select()
         .from(dietas)
-        .where(and(eq(dietas.usuarioId, auth.userId), eq(dietas.nome, nome)))
+        .where(
+          and(
+            eq(dietas.usuarioId, auth.userId),
+            eq(dietas.nome, values.nome),
+            eq(dietas.tipo, values.tipo!)
+          )
+        )
         .limit(1);
 
       if (dietaExistente.length > 0) {
-        throw new Error("Dieta já existe com esse nome.");
+        const dietaId = dietaExistente[0]?.id;
+        return c.json({ dietaId });
       }
 
-      const data = await db.insert(dietas).values({
-        id: createId(),
-        usuarioId: auth.userId,
-        criadoEm: new Date(),
-        ...values,
-      });
+      try {
+        const [data] = await db
+          .insert(dietas)
+          .values({
+            id: createId(),
+            usuarioId: auth.userId,
+            criadoEm: new Date(),
+            ...values,
+          })
+          .returning({ dietaId: dietas.id });
 
-      return c.json({ data });
+        return c.json({ dietaId: data.dietaId });
+      } catch (error) {
+        console.error(error);
+        return c.json({ error: "Erro ao criar a dieta" }, 500);
+      }
     }
   );
 
