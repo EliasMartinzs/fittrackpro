@@ -11,12 +11,12 @@ export default function Dietas() {
             <AbrirNovaDieta />
           </div>
           <div className="my-3">
-            <Calendario mostraHorario={false} />
+            <Calendario mostrarDietas />
           </div>
         </div>
       </div>
 
-      <div className="custom-shadow rounded-2xl p-4 space-y-6 bg-accent">
+      <div className="custom-shadow rounded-2xl p-4 space-y-6 bg-accent w-full">
         <div className="w-full flex items-center justify-between">
           <h4 className="text-lg lg:text-xl font-semibold text-foreground/80">
             Plano diário

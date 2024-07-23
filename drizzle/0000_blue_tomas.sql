@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS "alimentos" (
 	"quantidade" integer NOT NULL,
 	"calorias" integer,
 	"proteinas" integer,
-	"categoria" integer
+	"carboidratos" integer
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "dietas" (
@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS "dietas" (
 	"tipo" text,
 	"nome_da_dieta" text NOT NULL,
 	"descricao" text,
+	"calorias_gastas_por_dia" integer,
 	"criado_em" timestamp DEFAULT now()
 );
 --> statement-breakpoint
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS "refeicoes" (
 	"id" text PRIMARY KEY NOT NULL,
 	"dieta_id" text NOT NULL,
 	"nome" text NOT NULL,
-	"time" timestamp NOT NULL
+	"horario" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "treinos" (
@@ -50,9 +51,9 @@ CREATE TABLE IF NOT EXISTS "treinosDiarios" (
 	"dia_da_semana" text NOT NULL,
 	"nome_exercisio" text NOT NULL,
 	"categoria" text NOT NULL,
-	"Força" "tipoExercicio",
+	"tipo_exercicio" "tipoExercicio" DEFAULT 'Aeróbico',
 	"horario_treino" text,
-	"intensidade" text,
+	"intensidade" "intensidade" DEFAULT 'baixa',
 	"series" integer,
 	"repeticoes" integer,
 	"notas" text,

@@ -1,6 +1,7 @@
 import { db } from "@/db/db";
 import {
   alimentos,
+  DietaCompleta,
   dietas,
   inserirAlimentos,
   inserirDietas,
@@ -14,7 +15,69 @@ import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 
 const app = new Hono()
-  .get("")
+  .get("/refeicoes", clerkMiddleware(), async (c) => {
+    try {
+      const auth = getAuth(c);
+
+      if (!auth?.userId) {
+        return c.json({ error: "Usuário não autenticado" }, { status: 401 });
+      }
+
+      const dietaData = await db
+        .select()
+        .from(dietas)
+        .where(and(eq(dietas.usuarioId, auth.userId)));
+      if (dietaData.length === 0) {
+        return c.json({ error: "Dieta não encontrada" }, { status: 404 });
+      }
+
+      const dietaDetalhes = await Promise.all(
+        dietaData.map(async (dieta) => {
+          const refeicaoData = await db
+            .select()
+            .from(refeicoes)
+            .where(eq(refeicoes.dietaId, dieta.id));
+
+          const refeicoesComAlimentos = await Promise.all(
+            refeicaoData.map(async (refeicao) => {
+              const alimentosData = await db
+                .select()
+                .from(alimentos)
+                .where(eq(alimentos.refeicoesId, refeicao.id));
+              console.log(
+                `Refeições para dieta ${dieta.id}:`,
+                JSON.stringify(refeicaoData, null, 2)
+              );
+              return { ...refeicao, alimentos: alimentosData };
+            })
+          );
+
+          return { ...dieta, refeicoes: refeicoesComAlimentos };
+        })
+      );
+
+      const data = dietaDetalhes as DietaCompleta[];
+
+      return c.json({ data });
+    } catch (error) {
+      console.error("Erro interno do servidor:", error);
+      return c.json({ error: "Erro interno do servidor" }, { status: 500 });
+    }
+  })
+  .get("/", clerkMiddleware(), async (c) => {
+    const auth = getAuth(c);
+
+    if (!auth?.userId) {
+      return c.json({ error: "Usuário não autenticado" });
+    }
+
+    const data = await db
+      .select()
+      .from(dietas)
+      .where(eq(dietas.usuarioId, auth.userId));
+
+    return c.json({ data });
+  })
   .post(
     "/alimentos",
     clerkMiddleware(),
@@ -93,6 +156,7 @@ const app = new Hono()
         nome: true,
         descricao: true,
         tipo: true,
+        caloriasGastaPorDia: true,
       })
     ),
     async (c) => {
@@ -116,11 +180,14 @@ const app = new Hono()
         .limit(1);
 
       if (dietaExistente.length > 0) {
-        const dietaId = dietaExistente[0]?.id;
-        return c.json({ dietaId });
+        return c.json(
+          { error: "Uma dieta com esse nome e tipo já existe" },
+          400
+        );
       }
 
       try {
+        // Criar a nova dieta
         const [data] = await db
           .insert(dietas)
           .values({

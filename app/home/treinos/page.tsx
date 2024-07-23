@@ -12,7 +12,7 @@ export default function Treinos() {
             <AbrirNovoTreino />
           </div>
           <div className="my-3">
-            <Calendario />
+            <Calendario mostraHorario />
           </div>
         </div>
       </div>

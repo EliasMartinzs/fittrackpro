@@ -22,6 +22,7 @@ export const criarNovaDieta = () => {
           nome: json.nome,
           descricao: json.descricao,
           tipo: json.tipo,
+          caloriasGastaPorDia: json.caloriasGastaPorDia,
         },
       });
 

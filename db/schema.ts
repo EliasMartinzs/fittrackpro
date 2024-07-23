@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
@@ -25,6 +25,7 @@ export const intensidadeEnum = pgEnum("intensidade", [
   "alta",
 ]);
 
+// Tabelas
 export const treinos = pgTable("treinos", {
   id: text("id").primaryKey(),
   diaDaSemana: text("dia_da_semana").notNull(),
@@ -39,9 +40,9 @@ export const treinosDiarios = pgTable("treinosDiarios", {
   diaDaSemana: text("dia_da_semana").notNull(),
   nomeExercisio: text("nome_exercisio").notNull(),
   categoria: text("categoria").notNull(),
-  tipoExercicio: tipoExercicioEnum("Força"),
+  tipoExercicio: tipoExercicioEnum("tipo_exercicio").default("Aeróbico"),
   horarioTreino: text("horario_treino"),
-  intensidade: text("intensidade"),
+  intensidade: intensidadeEnum("intensidade").default("baixa"),
   series: integer("series"),
   repeticoes: integer("repeticoes"),
   notas: text("notas"),
@@ -65,6 +66,7 @@ export const dietas = pgTable("dietas", {
   tipo: text("tipo"),
   nome: text("nome_da_dieta").notNull(),
   descricao: text("descricao"),
+  caloriasGastaPorDia: integer("calorias_gastas_por_dia"),
   criadoEm: timestamp("criado_em", { mode: "date" }).defaultNow(),
 });
 
@@ -78,7 +80,7 @@ export const refeicoes = pgTable("refeicoes", {
     .references(() => dietas.id)
     .notNull(),
   nome: text("nome").notNull(),
-  horario: timestamp("time", { mode: "string" }).notNull(),
+  horario: timestamp("horario", { mode: "string" }).notNull(),
 });
 
 export const refeicoesRelacoes = relations(refeicoes, ({ one, many }) => ({
@@ -98,12 +100,26 @@ export const alimentos = pgTable("alimentos", {
   quantidade: integer("quantidade").notNull(),
   calorias: integer("calorias"),
   proteinas: integer("proteinas"),
-  carboidratos: integer("categoria"),
+  carboidratos: integer("carboidratos"),
 });
 
 export const alimentosRelacoes = relations(alimentos, ({ one }) => ({
-  alimentos: one(refeicoes),
+  refeicao: one(refeicoes, {
+    fields: [alimentos.refeicoesId],
+    references: [refeicoes.id],
+  }),
 }));
+
+// Tipos
+export type Alimento = InferSelectModel<typeof alimentos>;
+export type Refeicao = InferSelectModel<typeof refeicoes>;
+export type Dieta = InferSelectModel<typeof dietas>;
+export type RefeicaoComAlimentos = Refeicao & {
+  alimentos: Alimento[];
+};
+export type DietaCompleta = Dieta & {
+  refeicoes: RefeicaoComAlimentos[];
+};
 
 // Schemas de Inserção
 export const inserirTreinos = createInsertSchema(treinos);

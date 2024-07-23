@@ -41,8 +41,10 @@ export const DietaPassoUm = ({ proximo, setDietaId }: Props) => {
       nome: "",
       tipo: "Comum",
       descricao: "",
+      caloriasGastaPorDia: undefined,
     },
   });
+
   const criarDietaMutation = criarNovaDieta();
 
   const onSubmit: SubmitHandler<PassoUmValidacao> = (data) => {
@@ -51,6 +53,7 @@ export const DietaPassoUm = ({ proximo, setDietaId }: Props) => {
         nome: data?.nome!,
         descricao: data?.descricao,
         tipo: data?.tipo,
+        caloriasGastaPorDia: data.caloriasGastaPorDia,
       },
       {
         onSuccess: (data) => {
@@ -104,6 +107,27 @@ export const DietaPassoUm = ({ proximo, setDietaId }: Props) => {
                     ))}
                   </SelectContent>
                 </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="caloriasGastaPorDia"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Calorias gastas por dia</FormLabel>
+              <FormControl>
+                <Input
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(Number(e.target.value));
+                  }}
+                  placeholder="2200"
+                  type="number"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

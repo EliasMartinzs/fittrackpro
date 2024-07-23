@@ -63,6 +63,8 @@ export const tiposDeDietasEnum = z.enum([
   "Dieta Cetogênica",
   "Dieta Dukan",
   "Dieta Mediterrânea",
+  "Bulking",
+  "Cutting",
 ]);
 
 export const schemaPassoUm = z.object({
@@ -71,6 +73,7 @@ export const schemaPassoUm = z.object({
   }),
   tipo: tiposDeDietasEnum.default("Comum").optional(),
   descricao: z.string().optional(),
+  caloriasGastaPorDia: z.number(),
 });
 
 export const schemaPassoDois = z.object({

@@ -1,5 +1,5 @@
 {
-  "id": "16b5d15c-e1db-421f-8965-fc00f1e15ee0",
+  "id": "813929b2-2ed4-424d-8708-5847922ebbe0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -44,8 +44,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "categoria": {
-          "name": "categoria",
+        "carboidratos": {
+          "name": "carboidratos",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -104,6 +104,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "calorias_gastas_por_dia": {
+          "name": "calorias_gastas_por_dia",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "criado_em": {
           "name": "criado_em",
           "type": "timestamp",
@@ -139,8 +145,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "time": {
-          "name": "time",
+        "horario": {
+          "name": "horario",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true
@@ -240,11 +246,12 @@
           "primaryKey": false,
           "notNull": true
         },
-        "Força": {
-          "name": "Força",
+        "tipo_exercicio": {
+          "name": "tipo_exercicio",
           "type": "tipoExercicio",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'Aeróbico'"
         },
         "horario_treino": {
           "name": "horario_treino",
@@ -254,9 +261,10 @@
         },
         "intensidade": {
           "name": "intensidade",
-          "type": "text",
+          "type": "intensidade",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'baixa'"
         },
         "series": {
           "name": "series",

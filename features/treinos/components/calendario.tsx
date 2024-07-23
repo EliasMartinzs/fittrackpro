@@ -1,5 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { pegarDietas } from "@/features/dietas/api/pegar-dietas";
+import { usarSelecionarDieta } from "@/features/dietas/hooks/usar-selecionar-dieta";
 import { horarioTreino } from "@/lib/constants";
 import { cn, gerarDiasDaSemana } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -7,13 +16,19 @@ import { useCallback } from "react";
 
 type Props = {
   mostraHorario?: boolean;
+  mostrarDietas?: boolean;
 };
 
-export const Calendario = ({ mostraHorario = true }: Props) => {
+export const Calendario = ({
+  mostraHorario = false,
+  mostrarDietas = false,
+}: Props) => {
   const dias = gerarDiasDaSemana();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { data, isLoading } = pegarDietas();
+  const { setDietaId, dietaId } = usarSelecionarDieta();
 
   const diaSelecionado = searchParams.get("dia");
   const horarioSelecionado = searchParams.get("horario");
@@ -29,7 +44,7 @@ export const Calendario = ({ mostraHorario = true }: Props) => {
   );
 
   return (
-    <div className="space-y-4 lg:flex gap-3">
+    <div className="space-y-4 flex flex-col gap-5">
       <div className="flex items-start justify-center gap-1.5 overflow-hidden">
         {dias.map(({ diaSemana, data, hoje }) => (
           <div
@@ -79,6 +94,26 @@ export const Calendario = ({ mostraHorario = true }: Props) => {
               {horario}
             </Button>
           ))}
+        </div>
+      )}
+
+      {mostrarDietas && (
+        <div>
+          <Select
+            onValueChange={(e) => setDietaId(e)}
+            defaultValue={data?.data?.at(0)?.id}
+          >
+            <SelectTrigger className="border border-primary">
+              <SelectValue placeholder="Selecione sua dieta" />
+            </SelectTrigger>
+            <SelectContent>
+              {data?.data?.map((dieta) => (
+                <SelectItem value={dieta.id} key={dieta.id}>
+                  {dieta.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       )}
     </div>

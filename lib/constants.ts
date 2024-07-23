@@ -521,6 +521,9 @@ export const exercicios: { nome: string; tipo: string }[] = [
 export const horarioTreino: string[] = ["Manha", "Tarde", "Noite"] as const;
 
 export const tiposDeDietas: string[] = [
+  "Bulking",
+  "Cutting",
+  "Manutenção",
   "Comum",
   "Dieta Low Carb",
   "Dieta DASH",
