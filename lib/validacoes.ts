@@ -67,30 +67,38 @@ export const tiposDeDietasEnum = z.enum([
   "Cutting",
 ]);
 
-export const schemaPassoUm = z.object({
+export const novaDietaSchema = z.object({
   nome: z.string().min(1, {
     message: "Nome da dieta é obrigatório",
   }),
   tipo: tiposDeDietasEnum.default("Comum").optional(),
   descricao: z.string().optional(),
+  pesoDieta: z.number().min(1, {
+    message: "Peso atual no momento da dieta é obrigatório",
+  }),
   caloriasGastaPorDia: z.number(),
 });
 
-export const schemaPassoDois = z.object({
-  nome: z.string().min(1, {
-    message: "Nome da refeicao é obrigatório",
+export const novaRefeicaoSchema = z.object({
+  nome: z.string().min(3, {
+    message: "Por favor, Insira um nome",
   }),
-  horario: z.string(),
+  horario: z.string().min(1, {
+    message: "Horario é obrigatório",
+  }),
 });
 
-export const schemaPassoTres = z.object({
+export const novoAliemntoSchema = z.object({
   nome: z.string().min(1, {
-    message: "Nome do alimento é obrigatório",
+    message: "Por favor, Insira um nome",
   }),
   quantidade: z.number().min(1, {
-    message: "Quantidade é obrigatória",
+    message: "Por favor, Insira a quantidade",
   }),
   calorias: z.number().optional(),
   proteinas: z.number().optional(),
   carboidratos: z.number().optional(),
+  refeicaoid: z.string().min(1, {
+    message: "Por favor seleciona a refeição do alimento",
+  }),
 });

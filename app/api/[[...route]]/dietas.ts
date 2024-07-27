@@ -1,7 +1,6 @@
 import { db } from "@/db/db";
 import {
   alimentos,
-  DietaCompleta,
   dietas,
   inserirAlimentos,
   inserirDietas,
@@ -11,106 +10,84 @@ import {
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { zValidator } from "@hono/zod-validator";
 import { createId } from "@paralleldrive/cuid2";
-import { and, eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { Hono } from "hono";
 
 const app = new Hono()
-  .get("/refeicoes", clerkMiddleware(), async (c) => {
-    try {
-      const auth = getAuth(c);
-
-      if (!auth?.userId) {
-        return c.json({ error: "Usuário não autenticado" }, { status: 401 });
-      }
-
-      const dietaData = await db
-        .select()
-        .from(dietas)
-        .where(and(eq(dietas.usuarioId, auth.userId)));
-      if (dietaData.length === 0) {
-        return c.json({ error: "Dieta não encontrada" }, { status: 404 });
-      }
-
-      const dietaDetalhes = await Promise.all(
-        dietaData.map(async (dieta) => {
-          const refeicaoData = await db
-            .select()
-            .from(refeicoes)
-            .where(eq(refeicoes.dietaId, dieta.id));
-
-          const refeicoesComAlimentos = await Promise.all(
-            refeicaoData.map(async (refeicao) => {
-              const alimentosData = await db
-                .select()
-                .from(alimentos)
-                .where(eq(alimentos.refeicoesId, refeicao.id));
-              console.log(
-                `Refeições para dieta ${dieta.id}:`,
-                JSON.stringify(refeicaoData, null, 2)
-              );
-              return { ...refeicao, alimentos: alimentosData };
-            })
-          );
-
-          return { ...dieta, refeicoes: refeicoesComAlimentos };
-        })
-      );
-
-      const data = dietaDetalhes as DietaCompleta[];
-
-      return c.json({ data });
-    } catch (error) {
-      console.error("Erro interno do servidor:", error);
-      return c.json({ error: "Erro interno do servidor" }, { status: 500 });
-    }
-  })
   .get("/", clerkMiddleware(), async (c) => {
     const auth = getAuth(c);
 
     if (!auth?.userId) {
-      return c.json({ error: "Usuário não autenticado" });
+      return c.json({ error: "deu bo aqui" });
     }
 
-    const data = await db
+    const dietasData = await db
       .select()
       .from(dietas)
       .where(eq(dietas.usuarioId, auth.userId));
 
-    return c.json({ data });
-  })
-  .post(
-    "/alimentos",
-    clerkMiddleware(),
-    zValidator(
-      "json",
-      inserirAlimentos.pick({
-        nome: true,
-        proteinas: true,
-        calorias: true,
-        carboidratos: true,
-        quantidade: true,
-        refeicoesId: true,
-      })
-    ),
-    async (c) => {
-      const auth = getAuth(c);
-      const values = c.req.valid("json");
-
-      if (!auth?.userId) {
-        return c.json({ error: "Usuário não autenticado" });
-      }
-
-      const [data] = await db
-        .insert(alimentos)
-        .values({
-          id: createId(),
-          ...values,
-        })
-        .returning({ alimentoId: alimentos.id });
-
-      return c.json({ data });
+    if (dietasData.length === 0) {
+      return c.json({
+        data: dietasData.map((dieta) => ({
+          ...dieta,
+        })),
+      });
     }
-  )
+
+    const refeicoesData = await db
+      .select()
+      .from(refeicoes)
+      .where(
+        inArray(
+          refeicoes.dietaId,
+          dietasData.map((d) => d.id)
+        )
+      );
+
+    if (refeicoesData.length === 0) {
+      return c.json({
+        data: dietasData.map((dieta) => ({
+          ...dieta,
+          refeicoes: [],
+        })),
+      });
+    }
+
+    const alimentosData = await db
+      .select()
+      .from(alimentos)
+      .where(
+        inArray(
+          alimentos.refeicoesId,
+          refeicoesData.map((r) => r.id)
+        )
+      );
+
+    const parseTime = (timeString: string) => {
+      const [hours, minutes] = timeString.split(":").map(Number);
+      return new Date(0, 0, 0, hours, minutes);
+    };
+
+    const sortedRefeicoesData = refeicoesData.sort((a, b) => {
+      const timeA = parseTime(a.horario);
+      const timeB = parseTime(b.horario);
+      return timeA.getTime() - timeB.getTime();
+    });
+
+    const result = dietasData.map((dieta) => ({
+      ...dieta,
+      refeicoes: sortedRefeicoesData
+        .filter((refeicao) => refeicao.dietaId === dieta.id)
+        .map((refeicao) => ({
+          ...refeicao,
+          alimentos: alimentosData.filter(
+            (alimento) => alimento.refeicoesId === refeicao.id
+          ),
+        })),
+    }));
+
+    return c.json({ data: result });
+  })
   .post(
     "/refeicoes",
     clerkMiddleware(),
@@ -144,11 +121,14 @@ const app = new Hono()
         const refeicaoId = data.refeicaoId;
 
         return c.json({ refeicaoId });
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+        return c.json({ error: "Erro ao criar a refeição" }, 500);
+      }
     }
   )
   .post(
-    "/dietas",
+    "/",
     clerkMiddleware(),
     zValidator(
       "json",
@@ -157,6 +137,7 @@ const app = new Hono()
         descricao: true,
         tipo: true,
         caloriasGastaPorDia: true,
+        pesoDieta: true,
       })
     ),
     async (c) => {
@@ -170,19 +151,13 @@ const app = new Hono()
       const dietaExistente = await db
         .select()
         .from(dietas)
-        .where(
-          and(
-            eq(dietas.usuarioId, auth.userId),
-            eq(dietas.nome, values.nome),
-            eq(dietas.tipo, values.tipo!)
-          )
-        )
+        .where(eq(dietas.usuarioId, auth.userId))
         .limit(1);
 
       if (dietaExistente.length > 0) {
         return c.json(
-          { error: "Uma dieta com esse nome e tipo já existe" },
-          400
+          { error: "Você já possui uma dieta cadastrada no sistema" },
+          { status: 400 }
         );
       }
 
@@ -202,6 +177,44 @@ const app = new Hono()
       } catch (error) {
         console.error(error);
         return c.json({ error: "Erro ao criar a dieta" }, 500);
+      }
+    }
+  )
+  .post(
+    "/alimentos",
+    clerkMiddleware(),
+    zValidator(
+      "json",
+      inserirAlimentos.pick({
+        nome: true,
+        proteinas: true,
+        calorias: true,
+        carboidratos: true,
+        quantidade: true,
+        refeicoesId: true,
+      })
+    ),
+    async (c) => {
+      const auth = getAuth(c);
+      const values = c.req.valid("json");
+
+      if (!auth?.userId) {
+        return c.json({ error: "Usuário não autenticado" });
+      }
+
+      try {
+        const [data] = await db
+          .insert(alimentos)
+          .values({
+            id: createId(),
+            ...values,
+          })
+          .returning({ alimentoId: alimentos.id });
+
+        return c.json({ data });
+      } catch (error) {
+        console.error(error);
+        return c.json({ error: "Erro ao criar o alimento" }, 500);
       }
     }
   );

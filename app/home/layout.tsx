@@ -1,6 +1,5 @@
 import { DesktopSideBar } from "@/components/desktop-bar/desktop-side-bar";
 import { DesktopTopBar } from "@/components/desktop-bar/desktop-top-bar";
-import { Wrapper } from "@/components/global/wrapper,";
 import { MobileTopBar } from "@/components/mobile-top-bar/mobile-top-bar";
 
 type Props = {
@@ -14,8 +13,10 @@ export default function LayoutHome({ children }: Props) {
       <div className="lg:hidden w-full">
         <MobileTopBar />
 
-        {/* Conteúdo principal */}
-        <Wrapper className="mt-5">{children}</Wrapper>
+        {/* Conteúdo principal para mobile */}
+        <div className="mt-5">
+          <div className="p-4">{children}</div>
+        </div>
       </div>
 
       {/* Desktop Layout (lg e acima) */}
@@ -25,15 +26,17 @@ export default function LayoutHome({ children }: Props) {
           <DesktopSideBar />
         </div>
 
-        {/* Conteúdo principal */}
+        {/* Conteúdo principal para desktop */}
         <div className="flex-1 p-4">
           {/* Top Bar para desktop */}
           <div className="h-20">
             <DesktopTopBar />
           </div>
 
-          {/* Conteúdo principal */}
-          <div className="mr-10">{children}</div>
+          {/* Conteúdo principal para desktop */}
+          <div className="mr-10">
+            <div className="p-4">{children}</div>
+          </div>
         </div>
       </div>
     </div>

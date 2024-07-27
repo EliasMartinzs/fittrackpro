@@ -46,24 +46,30 @@ export const CategoriasChart = () => {
     return (
       <Card>
         <CardHeader>
-          <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+          <div className="flex flex-1 flex-col justify-center gap-1">
             <CardTitle>Categorias dos treinos</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={chartConfig}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="categoria" tickLine={false} axisLine={false} />
-              <YAxis />
-              <Tooltip content={<ChartTooltipContent hideLabel />} />
-              <Bar
-                dataKey="quantia"
-                fill={chartConfig.desktop.color}
-                radius={[8, 8, 0, 0]}
-              />
-            </BarChart>
-          </ChartContainer>
+          {chartData.length === 0 ? (
+            <p className="text-muted-foreground">
+              Nenhuma categoria criada ate o momento
+            </p>
+          ) : (
+            <ChartContainer config={chartConfig}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="categoria" tickLine={false} axisLine={false} />
+                <YAxis />
+                <Tooltip content={<ChartTooltipContent hideLabel />} />
+                <Bar
+                  dataKey="quantia"
+                  fill={chartConfig.desktop.color}
+                  radius={[8, 8, 0, 0]}
+                />
+              </BarChart>
+            </ChartContainer>
+          )}
         </CardContent>
         <CardFooter className="flex-col items-start gap-2 text-sm">
           <small className="leading-none text-muted-foreground">

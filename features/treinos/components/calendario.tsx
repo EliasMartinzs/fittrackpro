@@ -16,13 +16,9 @@ import { useCallback } from "react";
 
 type Props = {
   mostraHorario?: boolean;
-  mostrarDietas?: boolean;
 };
 
-export const Calendario = ({
-  mostraHorario = false,
-  mostrarDietas = false,
-}: Props) => {
+export const Calendario = ({ mostraHorario = false }: Props) => {
   const dias = gerarDiasDaSemana();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -94,26 +90,6 @@ export const Calendario = ({
               {horario}
             </Button>
           ))}
-        </div>
-      )}
-
-      {mostrarDietas && (
-        <div>
-          <Select
-            onValueChange={(e) => setDietaId(e)}
-            defaultValue={data?.data?.at(0)?.id}
-          >
-            <SelectTrigger className="border border-primary">
-              <SelectValue placeholder="Selecione sua dieta" />
-            </SelectTrigger>
-            <SelectContent>
-              {data?.data?.map((dieta) => (
-                <SelectItem value={dieta.id} key={dieta.id}>
-                  {dieta.nome}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
       )}
     </div>

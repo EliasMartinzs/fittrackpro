@@ -47,3 +47,10 @@ export function obterDiaDaSemana() {
 
   return diasDaSemana[diaDaSemana].slice(0, 3);
 }
+
+export function calcularAgua(peso: number) {
+  const mlPorPeso = 50;
+  const consumoAgua = peso * mlPorPeso;
+
+  return `${consumoAgua}ml`;
+}

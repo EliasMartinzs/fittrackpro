@@ -17,53 +17,43 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { tiposDeDietas } from "@/lib/constants";
-import { schemaPassoUm } from "@/lib/validacoes";
+import { novaDietaSchema } from "@/lib/validacoes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { criarNovaDieta } from "../api/criar-nova-dieta";
-import { toast } from "sonner";
 import { Loading } from "@/components/global/loading";
+import { usarNovaDieta } from "../hooks/usar-nova-dieta";
 
-export type PassoUmValidacao = z.infer<typeof schemaPassoUm>;
+export type dietaValidacao = z.infer<typeof novaDietaSchema>;
 
-type Props = {
-  proximo: () => void;
-  setDietaId: (dietaId: string) => void;
-};
-
-export const DietaPassoUm = ({ proximo, setDietaId }: Props) => {
-  const form = useForm<PassoUmValidacao>({
+export const NovaDietaForm = () => {
+  const form = useForm<dietaValidacao>({
     mode: "onChange",
-    resolver: zodResolver(schemaPassoUm),
+    resolver: zodResolver(novaDietaSchema),
     defaultValues: {
       nome: "",
       tipo: "Comum",
       descricao: "",
       caloriasGastaPorDia: undefined,
+      pesoDieta: undefined,
     },
   });
 
   const criarDietaMutation = criarNovaDieta();
+  const { fechar } = usarNovaDieta();
 
-  const onSubmit: SubmitHandler<PassoUmValidacao> = (data) => {
+  const onSubmit: SubmitHandler<dietaValidacao> = (data) => {
     criarDietaMutation.mutate(
       {
         nome: data?.nome!,
         descricao: data?.descricao,
         tipo: data?.tipo,
         caloriasGastaPorDia: data.caloriasGastaPorDia,
+        pesoDieta: data.pesoDieta,
       },
       {
-        onSuccess: (data) => {
-          setDietaId(data.dietaId as string);
-          form.reset();
-          proximo();
-        },
-        onError: () => {
-          toast("Houve um erro. Tente novamente!");
-        },
+        onSuccess: () => fechar(),
       }
     );
   };
@@ -78,7 +68,7 @@ export const DietaPassoUm = ({ proximo, setDietaId }: Props) => {
             <FormItem>
               <FormLabel>Nome da dieta</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Objetivo 80kg" />
+                <Input {...field} placeholder="Projeto verão" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -136,6 +126,27 @@ export const DietaPassoUm = ({ proximo, setDietaId }: Props) => {
 
         <FormField
           control={form.control}
+          name="pesoDieta"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Peso atual no momento da dieta</FormLabel>
+              <FormControl>
+                <Input
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(Number(e.target.value));
+                  }}
+                  placeholder="88.2 KG"
+                  type="number"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="descricao"
           render={({ field }) => (
             <FormItem>
@@ -156,13 +167,11 @@ export const DietaPassoUm = ({ proximo, setDietaId }: Props) => {
           {!criarDietaMutation.isPending ? (
             <>
               <Button
-                className="hover:bg-primary hover:text-primary-foreground transition-colors"
-                disabled={true}
+                variant="destructive"
+                disabled={criarDietaMutation.isPending}
+                size="full"
               >
-                <ChevronLeft /> Anterior
-              </Button>
-              <Button className="hover:bg-primary hover:text-primary-foreground transition-colors">
-                Proximo <ChevronRight />
+                Criar Dieta
               </Button>
             </>
           ) : (

@@ -19,13 +19,6 @@ import {
 import { pegarIntensidadeTreino } from "@/features/treinos/api/pegar-intensidade-treino";
 import { Skeleton } from "../ui/skeleton";
 
-type IntensidadePorMes = {
-  baixa: number;
-  media: number;
-  alta: number;
-  Baixa: number | null;
-};
-
 const chartConfig = {
   baixa: {
     label: "Baixa",
@@ -113,45 +106,49 @@ export const IntensidadeChart = () => {
         </div>
       </CardHeader>
       <CardContent className="px-2 sm:p-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <BarChart
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
+        {chartData.length >= 1 && (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[250px] w-full"
           >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                // Assumindo que o formato da data é 'YYYY-MM'
-                const [year, month] = value.split("-");
-                return `${month}/${year}`;
+            <BarChart
+              data={chartData}
+              margin={{
+                left: 12,
+                right: 12,
               }}
-            />
-            <YAxis />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px]"
-                  nameKey={activeChart}
-                  labelFormatter={(value) => {
-                    return value; // Mantém a data original no tooltip
-                  }}
-                />
-              }
-            />
-            <Bar dataKey={activeChart} fill={chartConfig[activeChart].color} />
-          </BarChart>
-        </ChartContainer>
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const [year, month] = value.split("-");
+                  return `${month}/${year}`;
+                }}
+              />
+              <YAxis />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    nameKey={activeChart}
+                    labelFormatter={(value) => {
+                      return value; // Mantém a data original no tooltip
+                    }}
+                  />
+                }
+              />
+              <Bar
+                dataKey={activeChart}
+                fill={chartConfig[activeChart].color}
+              />
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <small className="leading-none text-muted-foreground">

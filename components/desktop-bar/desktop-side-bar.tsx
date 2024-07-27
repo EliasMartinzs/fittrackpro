@@ -1,7 +1,7 @@
-import { SignOutButton } from "@clerk/nextjs";
-import { IoIosLogOut } from "react-icons/io";
 import { IconesSideBar } from "../global/icones-side-bar";
 import { TrocarTema } from "../global/trocar-tema";
+import { SairButton } from "../global/sair-button";
+import { LogOut } from "lucide-react";
 
 export const DesktopSideBar = () => {
   return (
@@ -11,9 +11,9 @@ export const DesktopSideBar = () => {
         <TrocarTema />
       </div>
 
-      <SignOutButton>
-        <IoIosLogOut className="size-6" />
-      </SignOutButton>
+      <div>
+        <SairButton label={<LogOut />} />
+      </div>
     </aside>
   );
 };

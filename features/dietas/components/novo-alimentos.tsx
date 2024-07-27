@@ -15,20 +15,12 @@ import {
 } from "@/components/ui/drawer";
 import { useEffect, useRef } from "react";
 import { useMediaQuery } from "usehooks-ts";
-import { usarNovaDieta } from "../hooks/usar-nova-dieta";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { usarNovoAlimento } from "../hooks/usar-novo-alimento";
+import { NovoAlimentoForm } from "./novo-alimento-form";
 
-import { BsQuestion } from "react-icons/bs";
-import { NovaDietaForm } from "./nova-dieta-form";
-
-export const NovaDieta = () => {
-  const { fechar, abrir, estaAberto } = usarNovaDieta();
+export const NovoAlimento = () => {
+  const { fechar, abrir, estaAberto } = usarNovoAlimento();
   const isDesktop = useMediaQuery("(min-width: 768px)", {
     defaultValue: false,
     initializeWithValue: true,
@@ -72,9 +64,11 @@ export const NovaDieta = () => {
       <Dialog open={estaAberto} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Criar nova dieta</DialogTitle>
+            <DialogTitle>Adicionar novo alimento a refeição</DialogTitle>
           </DialogHeader>
-          <NovaDietaForm />
+          <div>
+            <NovoAlimentoForm />
+          </div>
         </DialogContent>
       </Dialog>
     );
@@ -84,28 +78,12 @@ export const NovaDieta = () => {
     <Drawer open={estaAberto} onOpenChange={handleOpenChange}>
       <DrawerContent ref={drawerRef}>
         <DrawerHeader className="text-center flex items-center justify-center gap-2">
-          <DrawerTitle>Criar nova dieta</DrawerTitle>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <BsQuestion className="size-5" />
-              </TooltipTrigger>
-              <TooltipContent className="bg-background text-foreground">
-                <small>
-                  Ao criar sua dieta, ela será adicionada ao seu perfil e estará
-                  disponível para gerenciamento na página de Dietas. Lá, você
-                  poderá visualizar e ajustar todos os detalhes da sua dieta,
-                  como ingredientes, refeições e objetivos. Aproveite a
-                  funcionalidade completa para otimizar suas refeições e
-                  alcançar suas metas de forma eficaz.
-                </small>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <DrawerTitle>Adicionar novo alimento a refeição</DrawerTitle>
         </DrawerHeader>
         <div className="mx-5">
-          <NovaDietaForm />
+          <div>
+            <NovoAlimentoForm />
+          </div>
         </div>
       </DrawerContent>
     </Drawer>

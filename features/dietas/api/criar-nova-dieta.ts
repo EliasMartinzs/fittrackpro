@@ -1,6 +1,7 @@
 import { client } from "@/lib/hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType } from "hono";
+import { toast } from "sonner";
 
 type ResponseType = {
   dietaId?: string;
@@ -8,7 +9,7 @@ type ResponseType = {
 };
 
 type RequestType = InferRequestType<
-  (typeof client.api.dietas)["dietas"]["$post"]
+  (typeof client.api.dietas)["$post"]
 >["json"];
 
 export const criarNovaDieta = () => {
@@ -17,22 +18,24 @@ export const criarNovaDieta = () => {
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationKey: ["dietas"],
     mutationFn: async (json: RequestType) => {
-      const response = await client.api.dietas["dietas"].$post({
+      const response = await client.api.dietas.$post({
         json: {
           nome: json.nome,
           descricao: json.descricao,
           tipo: json.tipo,
           caloriasGastaPorDia: json.caloriasGastaPorDia,
+          pesoDieta: json.pesoDieta,
         },
       });
 
       return (await response.json()) as ResponseType;
     },
     onSuccess: () => {
+      toast("Dieta criada com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["dietas"] });
     },
-    onError: (error) => {
-      console.error("Erro ao criar a dieta:", error);
+    onError: () => {
+      toast("Houve um erro ao criar a dieta!");
     },
   });
 

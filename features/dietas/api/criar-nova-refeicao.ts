@@ -1,6 +1,7 @@
 import { client } from "@/lib/hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType } from "hono";
+import { toast } from "sonner";
 
 type ResponseType = {
   error?: string;
@@ -15,7 +16,7 @@ export const criarNovaRefeicao = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationKey: ["refeicoes"],
+    mutationKey: ["dietas"],
     mutationFn: async (json) => {
       const response = await client.api.dietas["refeicoes"].$post({
         json: {
@@ -27,8 +28,12 @@ export const criarNovaRefeicao = () => {
 
       return (await response.json()) as ResponseType;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["refeicoes"] });
+    onSuccess: () => {
+      toast("Refeição criada com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["dietas"] });
+    },
+    onError: () => {
+      toast("Houve um erro, Tente novamente!");
     },
   });
 

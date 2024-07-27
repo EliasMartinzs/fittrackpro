@@ -1,9 +1,8 @@
 import { AbrirMobileSheet } from "./abrir-mobile-sheet";
-import { currentUser } from "@clerk/nextjs/server";
-import { UserButton } from "@clerk/nextjs";
-import { Button } from "../ui/button";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { TrocarTema } from "../global/trocar-tema";
+import { currentUser } from "@clerk/nextjs/server";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const MobileTopBar = async () => {
   const user = await currentUser();
@@ -14,13 +13,21 @@ export const MobileTopBar = async () => {
         <AbrirMobileSheet />
 
         <div className="flex items-center gap-2">
-          <Button className="border rounded-lg">
+          <div className="rounded-lg border size-10 grid place-items-center">
             <TrocarTema />
-          </Button>
-          <Button className="border rounded-lg">
-            <IoNotificationsOutline className="size-5" />
-          </Button>
-          <UserButton />
+          </div>
+          <div className="rounded-lg border size-10 grid place-items-center">
+            <IoNotificationsOutline />
+          </div>
+          <div>
+            <Avatar className="size-9">
+              <AvatarImage src={user?.imageUrl} />
+              <AvatarFallback>
+                {user?.firstName?.charAt(0)}
+                {user?.firstName?.charAt(1)}
+              </AvatarFallback>
+            </Avatar>
+          </div>
         </div>
       </nav>
     </header>

@@ -1,6 +1,6 @@
 {
-  "id": "67a2b391-4f30-4e54-bb34-077a42143374",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "10d819f2-f221-46c0-8332-a2403fa3cc55",
+  "prevId": "67a2b391-4f30-4e54-bb34-077a42143374",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -165,7 +165,7 @@
         },
         "horario": {
           "name": "horario",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }

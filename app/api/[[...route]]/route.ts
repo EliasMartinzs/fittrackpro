@@ -8,7 +8,7 @@ export const runtime = "edge";
 
 const app = new Hono().basePath("/api");
 
-const routes = app.route("/treinos", treinos).route("/dietas", dietas);
+const routes = app.route("/dietas", dietas).route("/treinos", treinos);
 
 export const GET = handle(app);
 export const POST = handle(app);

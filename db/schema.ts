@@ -40,9 +40,9 @@ export const treinosDiarios = pgTable("treinosDiarios", {
   diaDaSemana: text("dia_da_semana").notNull(),
   nomeExercisio: text("nome_exercisio").notNull(),
   categoria: text("categoria").notNull(),
-  tipoExercicio: tipoExercicioEnum("tipo_exercicio").default("Aeróbico"),
+  tipoExercicio: tipoExercicioEnum("Força"),
   horarioTreino: text("horario_treino"),
-  intensidade: intensidadeEnum("intensidade").default("baixa"),
+  intensidade: text("intensidade"),
   series: integer("series"),
   repeticoes: integer("repeticoes"),
   notas: text("notas"),
@@ -67,6 +67,9 @@ export const dietas = pgTable("dietas", {
   nome: text("nome_da_dieta").notNull(),
   descricao: text("descricao"),
   caloriasGastaPorDia: integer("calorias_gastas_por_dia"),
+  pesoDieta: integer("peso_dieta"),
+  pesoAtual: integer("peso_atual"),
+  consumoAgua: integer("consumo_agua"),
   criadoEm: timestamp("criado_em", { mode: "date" }).defaultNow(),
 });
 
@@ -80,7 +83,7 @@ export const refeicoes = pgTable("refeicoes", {
     .references(() => dietas.id)
     .notNull(),
   nome: text("nome").notNull(),
-  horario: timestamp("horario", { mode: "string" }).notNull(),
+  horario: text("horario").notNull(),
 });
 
 export const refeicoesRelacoes = relations(refeicoes, ({ one, many }) => ({
@@ -110,16 +113,9 @@ export const alimentosRelacoes = relations(alimentos, ({ one }) => ({
   }),
 }));
 
-// Tipos
-export type Alimento = InferSelectModel<typeof alimentos>;
-export type Refeicao = InferSelectModel<typeof refeicoes>;
-export type Dieta = InferSelectModel<typeof dietas>;
-export type RefeicaoComAlimentos = Refeicao & {
-  alimentos: Alimento[];
-};
-export type DietaCompleta = Dieta & {
-  refeicoes: RefeicaoComAlimentos[];
-};
+export type AlimentosType = InferSelectModel<typeof alimentos>;
+export type RefeicoesType = InferSelectModel<typeof refeicoes>;
+export type DietaType = InferSelectModel<typeof dietas>;
 
 // Schemas de Inserção
 export const inserirTreinos = createInsertSchema(treinos);

@@ -5,7 +5,9 @@ import { TreinoDetalhe } from "@/features/treinos/components/treino-detalhes";
 
 export default function Treinos() {
   return (
-    <main className="space-y-4">
+    <main className="space-y-6">
+      <h2 className="font-medium text-2xl">Meus treinos</h2>
+
       <div className="w-full bg-accent rounded-2xl max-lg:flex flex-col gap-y-5 ">
         <div className="w-full flex items-center justify-center flex-col gap-y-8 lg:flex-row lg:justify-between px-4 custom-shadow rounded-2xl">
           <div className="max-lg:fixed bottom-3 right-3">
