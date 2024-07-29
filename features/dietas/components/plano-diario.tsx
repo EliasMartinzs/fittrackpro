@@ -41,14 +41,14 @@ export const PlanoDiario = () => {
     <div className="space-y-6">
       {data?.data.map((dieta) => (
         <div key={dieta.id} className="space-y-6">
-          <div className="flex flex-col lg:flex-row space-y-6">
-            <div className="flex-1">
+          <div className="flex flex-col space-y-6">
+            <div>
               <h6 className="font-semibold text-2xl">{dieta.nome}</h6>
               <p className="text-muted-foreground">{dieta.descricao}</p>
             </div>
 
-            <div className="flex gap-2">
-              <div className="flex-1 bg-background rounded-lg p-4 space-y-4">
+            <div className="flex gap-2 bg">
+              <div className="bg-background rounded-lg p-4 space-y-4">
                 <div className="w-full flex items-center justify-between">
                   <h6 className="font-medium text-lg">Peso corporal</h6>
                   <IoMdBody className="size-5" />
@@ -68,7 +68,7 @@ export const PlanoDiario = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex-1 bg-background rounded-lg p-4 space-y-4">
+              <div className="bg-background rounded-lg p-4 space-y-4">
                 <div className="w-full flex items-center justify-between">
                   <h6 className="font-medium text-lg">Água</h6>{" "}
                   <IoWaterOutline className="size-5" />
