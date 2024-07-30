@@ -1,8 +1,8 @@
 name: Daily Water Reset
 
 on:
-   schedule:
-    - cron: '46 18 * * *'  # Executa todos os dias às 18:39 UTC
+  schedule:
+    - cron: '55 18 * * *'  # Executa todos os dias às 18:46 UTC
 
 jobs:
   reset-water:
@@ -18,6 +18,10 @@ jobs:
 
       - name: Make POST request to reset water consumption
         run: |
-          curl -X POST https://hs-fitness.vercel.app/api/reset-water \
+          echo "Making POST request to reset water consumption..."
+          response=$(curl -X POST https://hs-fitness.vercel.app/api/dietas/resetar-agua \
             -H "Authorization: Bearer ${{ secrets.CLERK_SECRET_KEY }}" \
-            -w "%{http_code}" -o response.txt -s | grep -q "^200$"
+            -w "%{http_code}" -o response.txt -s)
+          echo "Response code: $response"
+          echo "Response body:"
+          cat response.txt
