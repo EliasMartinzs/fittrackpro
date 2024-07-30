@@ -18,4 +18,6 @@ jobs:
 
       - name: Make POST request to reset water consumption
         run: |
-          curl -X POST https://hs-fitness.vercel.app/api/reset-water
+          curl -X POST https://hs-fitness.vercel.app/api/reset-water \
+            -H "Authorization: Bearer ${{ sk_test_n9YUOxm4lDsQ0N1bTF1OCAaHsfQNFbmrkinetIACDi }}" \
+            -w "%{http_code}" -o response.txt -s | grep -q "^200$"
