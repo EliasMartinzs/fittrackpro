@@ -1,0 +1,21 @@
+name: Daily Water Reset
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Execute todos os dias à meia-noite UTC
+
+jobs:
+  reset-water:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Make POST request to reset water consumption
+        run: |
+          curl -X POST https://hs-fitness.vercel.app/api/reset-water
