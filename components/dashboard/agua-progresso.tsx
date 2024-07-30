@@ -5,7 +5,6 @@ import { calcularAgua } from "@/lib/utils";
 import { Heat } from "@alptugidin/react-circular-progress-bar";
 import { useTheme } from "next-themes";
 import { LuGlassWater } from "react-icons/lu";
-import { Loading } from "../global/loading";
 import { Skeleton } from "../ui/skeleton";
 
 export const AguaProgresso = () => {

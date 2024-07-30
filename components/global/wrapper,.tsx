@@ -11,3 +11,5 @@ export const Wrapper = React.forwardRef<
     {...props}
   />
 ));
+
+Wrapper.displayName = "Wrapper";
