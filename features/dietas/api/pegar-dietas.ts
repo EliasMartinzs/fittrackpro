@@ -1,4 +1,3 @@
-import { AlimentosType, DietaType, RefeicoesType } from "@/db/schema";
 import { client } from "@/lib/hono";
 import { useQuery } from "@tanstack/react-query";
 
@@ -20,6 +19,8 @@ type Response = {
         nome: string;
         quantidade: number;
         calorias: number | null;
+        proteinas: number | null;
+        carboidratos: number | null;
       }[];
     }[];
   }[];

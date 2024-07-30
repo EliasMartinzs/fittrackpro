@@ -4,28 +4,32 @@ import { InferRequestType, InferResponseType } from "hono";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.dietas)["alimentos"]["$post"]
+  (typeof client.api.dietas)["adicionar-agua"]["$post"]
 >;
-type RequestType = InferRequestType<
-  (typeof client.api.dietas)["alimentos"]["$post"]
->["json"];
 
-export const criarNovoAlimento = () => {
+type RequestType = InferRequestType<
+  (typeof client.api.dietas)["adicionar-agua"]["$post"]
+>;
+
+export const adicionarAgua = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationKey: ["dietas"],
-    mutationFn: async (json) => {
-      const response = await client.api.dietas["alimentos"]["$post"]({ json });
+    mutationFn: async (json: RequestType) => {
+      const response = await client.api.dietas["adicionar-agua"].$post({
+        json: {
+          consumoAgua: json.json.consumoAgua,
+        },
+      });
 
-      return await response.json();
+      return (await response.json()) as ResponseType;
     },
     onSuccess: () => {
-      toast("Alimento criado com sucesso");
       queryClient.invalidateQueries({ queryKey: ["dietas"] });
     },
     onError: () => {
-      toast("Houve um erro, Tente novamente!");
+      toast("Houve um erro ao criar a dieta!");
     },
   });
 

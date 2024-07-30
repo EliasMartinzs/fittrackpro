@@ -7,7 +7,7 @@ export const Wrapper = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("px-3 md:px-5 lg:px-10 xl:px-16", className)}
+    className={cn("px-2 lg:max-w-5xl lg:mx-auto", className)}
     {...props}
   />
 ));

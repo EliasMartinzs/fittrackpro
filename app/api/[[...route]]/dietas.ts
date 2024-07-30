@@ -2,6 +2,7 @@ import { db } from "@/db/db";
 import {
   alimentos,
   dietas,
+  historicoConsumoAgua,
   inserirAlimentos,
   inserirDietas,
   inserirRefeicoes,
@@ -10,7 +11,7 @@ import {
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { zValidator } from "@hono/zod-validator";
 import { createId } from "@paralleldrive/cuid2";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { Hono } from "hono";
 
 const app = new Hono()
@@ -88,6 +89,97 @@ const app = new Hono()
 
     return c.json({ data: result });
   })
+  .post(
+    "/adicionar-agua",
+    clerkMiddleware(),
+    zValidator(
+      "json",
+      inserirDietas.pick({
+        consumoAgua: true,
+      })
+    ),
+    async (c) => {
+      const auth = getAuth(c);
+      const { consumoAgua } = c.req.valid("json");
+
+      if (!auth?.userId) {
+        return c.json({ error: "deu bo aqui" });
+      }
+
+      const data = await db
+        .update(dietas)
+        .set({
+          consumoAgua: sql`${dietas.consumoAgua} + ${consumoAgua}`,
+        })
+        .where(and(eq(dietas.usuarioId, auth.userId)));
+
+      return c.json({ data });
+    }
+  )
+  .post("/resetar-agua", clerkMiddleware(), async (c) => {
+    const auth = getAuth(c);
+
+    if (!auth?.userId) {
+      return c.json({ error: "Usuário não autenticado" }, 401);
+    }
+
+    try {
+      const [dataDieta] = await db
+        .update(dietas)
+        .set({ consumoAgua: 0 })
+        .where(eq(dietas.usuarioId, auth.userId))
+        .returning({ id: dietas.id, quantidade: dietas.consumoAgua });
+
+      if (!dataDieta) {
+        return c.json({ error: "Falha ao atualizar o consumo de água" }, 500);
+      }
+
+      await db.insert(historicoConsumoAgua).values({
+        id: createId(),
+        criadoEm: new Date().toISOString(),
+        dietaId: dataDieta.id,
+        quantidade: dataDieta.quantidade!,
+      });
+
+      return c.json({ message: "Consumo de água resetado com sucesso!" });
+    } catch (error) {
+      console.error("Erro ao resetar consumo de água:", error);
+      return c.json({ error: "Erro ao resetar consumo de água" }, 500);
+    }
+  })
+  .post(
+    "/atualizar-peso",
+    clerkMiddleware(),
+    zValidator(
+      "json",
+      inserirDietas.pick({
+        id: true,
+        pesoAtual: true,
+      })
+    ),
+    async (c) => {
+      const auth = getAuth(c);
+      const { id, pesoAtual } = c.req.valid("json");
+
+      if (!auth?.userId) {
+        return c.json({ error: "deu bo aqui" });
+      }
+
+      if (!id) {
+        return c.json({ error: "Id não encontrado!" });
+      }
+
+      const data = await db
+        .update(dietas)
+        .set({
+          pesoAtual: pesoAtual,
+        })
+        .where(and(eq(dietas.id, id), eq(dietas.usuarioId, auth.userId)))
+        .returning({ id: dietas.id });
+
+      return c.json({ data });
+    }
+  )
   .post(
     "/refeicoes",
     clerkMiddleware(),
@@ -216,6 +308,33 @@ const app = new Hono()
         console.error(error);
         return c.json({ error: "Erro ao criar o alimento" }, 500);
       }
+    }
+  )
+  .delete(
+    "/deletar-dieta",
+    clerkMiddleware(),
+    zValidator(
+      "json",
+      inserirDietas.pick({
+        id: true,
+      })
+    ),
+    async (c) => {
+      const auth = getAuth(c);
+      const values = c.req.valid("json");
+
+      if (!auth?.userId) {
+        return c.json({ error: "Usuário não autenticado" });
+      }
+
+      const data = await db
+        .delete(dietas)
+        .where(and(eq(dietas.id, values.id), eq(dietas.usuarioId, auth.userId)))
+        .returning({
+          id: dietas.id,
+        });
+
+      return c.json({ data });
     }
   );
 

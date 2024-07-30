@@ -4,24 +4,28 @@ import { InferRequestType, InferResponseType } from "hono";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.dietas)["alimentos"]["$post"]
+  (typeof client.api.dietas)["atualizar-peso"]["$post"]
 >;
-type RequestType = InferRequestType<
-  (typeof client.api.dietas)["alimentos"]["$post"]
+type ResquestResponse = InferRequestType<
+  (typeof client.api.dietas)["atualizar-peso"]["$post"]
 >["json"];
 
-export const criarNovoAlimento = () => {
+export const criarPesoAtual = () => {
   const queryClient = useQueryClient();
-
-  const mutation = useMutation<ResponseType, Error, RequestType>({
+  const mutation = useMutation<ResponseType, Error, ResquestResponse>({
     mutationKey: ["dietas"],
     mutationFn: async (json) => {
-      const response = await client.api.dietas["alimentos"]["$post"]({ json });
+      const response = await client.api.dietas["atualizar-peso"].$post({
+        json,
+      });
+
+      if (!response.ok) {
+        return { error: "Erro ao atualizar peso atual" };
+      }
 
       return await response.json();
     },
     onSuccess: () => {
-      toast("Alimento criado com sucesso");
       queryClient.invalidateQueries({ queryKey: ["dietas"] });
     },
     onError: () => {

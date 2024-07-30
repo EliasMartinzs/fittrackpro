@@ -1,3 +1,4 @@
+import { Wrapper } from "@/components/global/wrapper,";
 import { AbrirNovaDieta } from "@/features/dietas/components/abrir-nova-dieta";
 import { AbrirNovaRefeicao } from "@/features/dietas/components/abrir-nova-refeicao";
 import { AbrirNovoAlimento } from "@/features/dietas/components/abrir-novo-alimento";
@@ -6,10 +7,10 @@ import { Calendario } from "@/features/treinos/components/calendario";
 
 export default function Dietas() {
   return (
-    <main className="space-y-6">
+    <Wrapper className="space-y-6">
       <h2 className="font-medium text-2xl">Minhas dietas</h2>
 
-      <div className="w-full bg-accent rounded-2xl max-lg:flex flex-col gap-y-5 ">
+      <div className="w-full border-2 border-accent rounded-2xl max-lg:flex flex-col gap-y-5 ">
         <div className="w-full flex items-center justify-center flex-col gap-y-8 lg:flex-row lg:justify-between px-4 custom-shadow rounded-2xl">
           <div className="max-lg:fixed bottom-3 right-3">
             <AbrirNovaDieta />
@@ -20,7 +21,7 @@ export default function Dietas() {
         </div>
       </div>
 
-      <div className="custom-shadow rounded-2xl p-4 space-y-6 bg-accent w-full">
+      <div className="custom-shadow rounded-2xl p-4 space-y-6 border-2 border-accent w-full">
         <div className="w-full flex items-center justify-between">
           <h4 className="text-lg lg:text-xl font-semibold">Dieta</h4>
           <div className="flex gap-x-3 items-center">
@@ -32,6 +33,6 @@ export default function Dietas() {
           <PlanoDiario />
         </div>
       </div>
-    </main>
+    </Wrapper>
   );
 }

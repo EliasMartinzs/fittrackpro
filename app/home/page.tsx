@@ -1,9 +1,11 @@
 import { CategoriasChart } from "@/components/dashboard/categorias-chart";
 import { IntensidadeChart } from "@/components/dashboard/intensidade-chart";
+import { Wrapper } from "@/components/global/wrapper,";
+import { AguaProgresso } from "@/components/dashboard/agua-progresso";
 
 export default function Dashbaord() {
   return (
-    <div className="space-y-6">
+    <Wrapper className="space-y-6">
       <h2 className="font-medium text-2xl">Dashboard</h2>
 
       <div className="flex flex-col lg:flex-row gap-3">
@@ -14,6 +16,10 @@ export default function Dashbaord() {
           <IntensidadeChart />
         </div>
       </div>
-    </div>
+
+      <div className="w-full max-lg:flex items-center justify-center">
+        <AguaProgresso />
+      </div>
+    </Wrapper>
   );
 }

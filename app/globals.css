@@ -12,16 +12,16 @@
     --popover-foreground: 240 10% 3.9%;
     --primary: 262.1 83.3% 57.8%;
     --primary-foreground: 210 20% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
+    --secondary: 0 0% 85%;
+    --secondary-foreground: 240 5.9% 0%;
+    --muted: 0 0% 85%;
     --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent: 0 0% 85%;
+    --accent-foreground: 240 5.9% 0%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --border: 240 5.9% 0%;
+    --input: 240 5.9% 0%;
     --ring: 262.1 83.3% 57.8%;
     --radius: 1rem;
   }
@@ -93,4 +93,47 @@
   .custom-shadow {
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   }
+}
+
+/* CSS para o Grid Layout */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr); /* 1 coluna por padrão (mobile) */
+  gap: 8px; /* Espaçamento entre os itens */
+}
+
+/* Alterar para 2 colunas em telas maiores */
+@media (min-width: 768px) {
+  /* Ajuste o breakpoint conforme necessário */
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas para desktop */
+  }
+}
+
+.drop {
+  position: relative;
+  padding: 0;
+  border: 1px solid #00aaff;
+  margin: 0 auto;
+  width: 150px;
+  height: 150px;
+  overflow: hidden; /* Garante que o pseudo-elemento não ultrapasse os limites da gota */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.water-fill {
+  width: 100%; /* Ocupa toda a largura da gota */
+  height: 0; /* Inicialmente não tem altura */
+  background-color: #00aaff; /* Cor da água */
+  transition: height 0.3s ease; /* Transição suave ao alterar a altura */
+}
+
+.fill-text {
+  position: absolute;
+  z-index: 1;
 }

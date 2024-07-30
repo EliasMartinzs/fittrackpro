@@ -102,3 +102,9 @@ export const novoAliemntoSchema = z.object({
     message: "Por favor seleciona a refeição do alimento",
   }),
 });
+
+export const novoPesoAtualSchema = z.object({
+  pesoAtual: z.number().min(1, {
+    message: "Por favor, Insira seu peso corretamente!",
+  }),
+});

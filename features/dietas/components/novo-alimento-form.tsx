@@ -54,7 +54,6 @@ export const NovoAlimentoForm = () => {
   }));
 
   const onSubmit: SubmitHandler<alimentoValidacao> = (data) => {
-    console.log(data);
     criarNovoAlimentoMutation.mutate(
       {
         nome: data?.nome,

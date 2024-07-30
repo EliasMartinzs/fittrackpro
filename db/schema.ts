@@ -75,12 +75,13 @@ export const dietas = pgTable("dietas", {
 
 export const dietasRelacoes = relations(dietas, ({ many }) => ({
   refeicoes: many(refeicoes),
+  historicoConsumoAgua: many(historicoConsumoAgua),
 }));
 
 export const refeicoes = pgTable("refeicoes", {
   id: text("id").primaryKey(),
   dietaId: text("dieta_id")
-    .references(() => dietas.id)
+    .references(() => dietas.id, { onDelete: "cascade" })
     .notNull(),
   nome: text("nome").notNull(),
   horario: text("horario").notNull(),
@@ -97,7 +98,7 @@ export const refeicoesRelacoes = relations(refeicoes, ({ one, many }) => ({
 export const alimentos = pgTable("alimentos", {
   id: text("id").primaryKey(),
   refeicoesId: text("refeicoes_id")
-    .references(() => refeicoes.id)
+    .references(() => refeicoes.id, { onDelete: "cascade" })
     .notNull(),
   nome: text("nome").notNull(),
   quantidade: integer("quantidade").notNull(),
@@ -112,6 +113,25 @@ export const alimentosRelacoes = relations(alimentos, ({ one }) => ({
     references: [refeicoes.id],
   }),
 }));
+
+export const historicoConsumoAgua = pgTable("historico_consumo_agua", {
+  id: text("id").primaryKey(),
+  dietaId: text("dieta_id")
+    .references(() => dietas.id, { onDelete: "cascade" })
+    .notNull(),
+  quantidade: integer("quantidade").notNull(),
+  criadoEm: timestamp("criado_em", { mode: "string" }).notNull(),
+});
+
+export const historicoConsumoAguaRelacoes = relations(
+  historicoConsumoAgua,
+  ({ one }) => ({
+    dieta: one(dietas, {
+      fields: [historicoConsumoAgua.dietaId],
+      references: [dietas.id],
+    }),
+  })
+);
 
 export type AlimentosType = InferSelectModel<typeof alimentos>;
 export type RefeicoesType = InferSelectModel<typeof refeicoes>;

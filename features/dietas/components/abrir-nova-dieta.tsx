@@ -24,7 +24,7 @@ export const AbrirNovaDieta = () => {
     <Button
       className={cn(
         "rounded-xl hover:bg-primary/70 transition-colors shadow-md flex items-center gap-2 bg-primary text-primary-foreground",
-        data?.data.length !== 0 && "hidden"
+        Array.isArray(data?.data) && data?.data.length !== 0 && "hidden"
       )}
       onClick={abrir}
       disabled={existeDieta}

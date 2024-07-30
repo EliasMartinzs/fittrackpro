@@ -10,7 +10,8 @@ export const AbrirNovoAlimento = () => {
   const { data, isLoading } = pegarDietas();
 
   const visibilidadeButton =
-    data !== undefined && data?.data?.at(0)?.refeicoes.length === 0;
+    data !== undefined &&
+    data?.data?.at(0)?.refeicoes?.at(0)?.alimentos.length !== 0;
 
   if (isLoading) {
     return;
