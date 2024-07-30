@@ -2,7 +2,7 @@ name: Daily Water Reset
 
 on:
    schedule:
-    - cron: '39 18 * * *'  # Executa todos os dias às 18:39 UTC
+    - cron: '46 18 * * *'  # Executa todos os dias às 18:39 UTC
 
 jobs:
   reset-water:
