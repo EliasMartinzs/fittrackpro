@@ -5,7 +5,7 @@ import { LogOut } from "lucide-react";
 
 export const DesktopSideBar = () => {
   return (
-    <aside className="h-full flex items-center justify-between flex-col relative py-4">
+    <aside className="h-full flex items-center justify-between flex-col fixed">
       <div className="flex-1 flex flex-col items-center justify-center gap-y-7">
         <IconesSideBar />
         <TrocarTema />

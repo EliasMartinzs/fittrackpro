@@ -22,7 +22,7 @@ export default function LayoutHome({ children }: Props) {
       {/* Desktop Layout (lg e acima) */}
       <div className="hidden lg:flex h-screen w-screen">
         {/* Sidebar */}
-        <div className="w-20">
+        <div className="w-20 px-4">
           <DesktopSideBar />
         </div>
 
