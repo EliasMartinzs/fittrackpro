@@ -9,13 +9,13 @@ export const AbrirNovoAlimento = () => {
   const { abrir } = usarNovoAlimento();
   const { data, isLoading } = pegarDietas();
 
-  const visibilidadeButton =
-    data !== undefined &&
-    data?.data?.at(0)?.refeicoes?.at(0)?.alimentos.length !== 0;
+  const visibilidadeButton = data !== undefined && data?.data.length === 0;
 
   if (isLoading) {
     return;
   }
+
+  console.log(data?.data);
 
   return (
     <>
