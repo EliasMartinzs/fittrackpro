@@ -52,5 +52,5 @@ export function calcularAgua(peso: number) {
   const mlPorPeso = 50;
   const consumoAgua = peso * mlPorPeso;
 
-  return `${consumoAgua}ml`;
+  return consumoAgua;
 }

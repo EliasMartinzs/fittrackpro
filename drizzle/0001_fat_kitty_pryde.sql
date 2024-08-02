@@ -1,1 +1,0 @@
-ALTER TABLE "refeicoes" ALTER COLUMN "horario" SET DATA TYPE text;

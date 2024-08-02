@@ -1,5 +1,5 @@
 {
-  "id": "67a2b391-4f30-4e54-bb34-077a42143374",
+  "id": "8a69acbe-0f43-45f7-b670-f1cb1b0f4252",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -63,7 +63,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -165,7 +165,7 @@
         },
         "horario": {
           "name": "horario",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -182,7 +182,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

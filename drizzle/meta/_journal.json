@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1721918802646,
-      "tag": "0000_many_black_crow",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1721929702082,
-      "tag": "0001_fat_kitty_pryde",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1722280639606,
-      "tag": "0002_skinny_fenris",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1722365669345,
-      "tag": "0003_open_zaladane",
+      "when": 1722391278646,
+      "tag": "0000_tough_gateway",
       "breakpoints": true
     }
   ]

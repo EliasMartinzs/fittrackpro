@@ -1,5 +1,5 @@
 import { IconType } from "react-icons/lib";
-import { CiCalendar, CiSettings } from "react-icons/ci";
+import { CiCalendar } from "react-icons/ci";
 import { IoStatsChartSharp } from "react-icons/io5";
 import { LuMonitorSmartphone } from "react-icons/lu";
 import { CgGym } from "react-icons/cg";
@@ -47,11 +47,6 @@ export const sidebarIcones: { icon: IconType; label: string; href: string }[] =
       icon: FaNutritionix,
       label: "Dietas",
       href: "/home/dietas",
-    },
-    {
-      icon: CiSettings,
-      label: "Configuracoes",
-      href: "/home/configuracoes",
     },
   ] as const;
 

@@ -6,11 +6,26 @@ import { Heat } from "@alptugidin/react-circular-progress-bar";
 import { useTheme } from "next-themes";
 import { LuGlassWater } from "react-icons/lu";
 import { Skeleton } from "../ui/skeleton";
+import { resetarAgua } from "@/features/treinos/api/resetar-agua";
+import { GrPowerReset } from "react-icons/gr";
 
 export const AguaProgresso = () => {
   const { theme } = useTheme();
-  const { abrir } = usarAdicionarAgua();
+  const { abrir, fechar } = usarAdicionarAgua();
   const { data, isLoading } = pegarDietas();
+  const mutation = resetarAgua();
+
+  const on = () => {
+    mutation.mutate(
+      {},
+      {
+        onSuccess: () => {
+          fechar();
+          window.location.reload();
+        },
+      }
+    );
+  };
 
   const text = theme === "dark" ? "#fff" : "#000";
 
@@ -24,21 +39,47 @@ export const AguaProgresso = () => {
     );
   }
 
+  const peso = data?.data?.at(0)?.pesoAtual ?? 0;
+  let consumoAgua = Number(data?.data?.at(0)?.consumoAgua) ?? 0;
+  const aguaTotalRecomendada = calcularAgua(peso);
+
+  // Limitar consumo de água ao máximo recomendado
+  if (consumoAgua > aguaTotalRecomendada) {
+    consumoAgua = aguaTotalRecomendada;
+  }
+
+  let progress =
+    aguaTotalRecomendada > 0
+      ? Math.min((consumoAgua / aguaTotalRecomendada) * 100, 100)
+      : 0;
+
+  if (progress < 0.01) {
+    progress = 0;
+  }
+
+  const formattedProgress = progress.toFixed(2);
+
   return (
-    <div className="w-72 flex flex-row items-start justify-center gap-3 lg:px-2">
+    <div className="w-72 flex flex-row items-start text-center justify-center gap-y-6 lg:px-2">
       <div className="w-full space-y-2">
-        <p className="font-semibold">Consumo de água</p>
+        <p className="font-semibold" onClick={on}>
+          Consumo de água
+        </p>
         <Heat
-          progress={Number(data?.data?.at(0)?.consumoAgua)}
+          progress={Number(formattedProgress)}
           range={{ from: 0, to: 100 }}
-          sign={{ value: "ml", position: "end" }}
+          sign={{ value: "%", position: "end" }}
           showValue={true}
           revertBackground={false}
-          text={`${calcularAgua(data?.data?.at(0)?.pesoDieta!)} total`}
+          text={`${
+            consumoAgua === aguaTotalRecomendada
+              ? "Perfeito"
+              : `${consumoAgua} de ${aguaTotalRecomendada} ml total`
+          }`}
           sx={{
             barWidth: 5,
             bgColor: "#dadada",
-            shape: "half",
+            shape: "threequarters",
             valueSize: 12,
             textSize: 9,
             valueFamily: "Wingdings",
@@ -55,10 +96,16 @@ export const AguaProgresso = () => {
         />
       </div>
 
-      <LuGlassWater
-        className="size-8 text-blue-500 cursor-pointer"
-        onClick={abrir}
-      />
+      <div className="space-y-6">
+        <LuGlassWater
+          className="size-6 text-blue-500 cursor-pointer"
+          onClick={abrir}
+        />
+        <GrPowerReset
+          className="size-6 text-blue-500 cursor-pointer"
+          onClick={on}
+        />
+      </div>
     </div>
   );
 };
